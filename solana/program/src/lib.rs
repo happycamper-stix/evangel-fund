@@ -125,6 +125,13 @@ pub struct Sponsorship {
     pub until: i64,
     pub settled: bool,
 }
+#[derive(BorshSerialize, BorshDeserialize)]
+pub struct AdoptionCandidate {
+    pub tag: u8,
+    pub project: Pubkey,
+    pub owner: Pubkey,
+    pub terms: [u8; 32],
+}
 // Status: 0 proposed, 1 approved plan, 2 approved completion, 3 challenged, 4 paid, 5 rejected.
 #[derive(BorshSerialize, BorshDeserialize)]
 pub enum Action {
@@ -254,6 +261,17 @@ pub enum Action {
         deadline: i64,
         terms: [u8; 32],
         uri: String,
+    },
+    // Append-only ABI: independently verified candidate selection may supersede
+    // an unverified claim. Only governance can select or advance this epoch.
+    SelectAdopter {
+        nonce: u64,
+        owner: Pubkey,
+        terms: [u8; 32],
+        report: [u8; 32],
+    },
+    SubmitAdoptionCandidate {
+        terms: [u8; 32],
     },
 }
 fn check(ok: bool) -> ProgramResult {
@@ -509,6 +527,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
         check(matches!(
             inner,
             Action::ApproveAdoption { .. }
+                | Action::SelectAdopter { .. }
                 | Action::RejectAdoption { .. }
                 | Action::ReviewMilestone { .. }
                 | Action::Award { .. }
@@ -794,11 +813,12 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
     match action {
         Action::RequestAdoption { terms } => {
             hash(&terms)?;
-            check(!p.adopted && (p.owner == Pubkey::default() || p.owner == *who.key))?;
-            p.adoption_nonce = p
-                .adoption_nonce
-                .checked_add(1)
-                .ok_or(ProgramError::ArithmeticOverflow)?;
+            check(!p.adopted && p.owner == Pubkey::default() && p.adoption_at == 0)?;
+            // Claimants cannot keep changing the epoch to invalidate queued votes.
+            // Rejection advances it; a request merely fills the vacant claim slot.
+            if p.adoption_nonce == 0 {
+                p.adoption_nonce = 1;
+            }
             p.owner = *who.key;
             p.adoption_hash = terms;
             p.adoption_at = 0;
@@ -820,6 +840,73 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                     && p.adoption_hash == terms,
             )?;
             p.adoption_at = now + NOTICE;
+        }
+        Action::SubmitAdoptionCandidate { terms } => {
+            hash(&terms)?;
+            check(!p.adopted)?;
+            let candidate = next_account_info(it)?;
+            let sys = next_account_info(it)?;
+            let bump = pda(
+                pid,
+                candidate,
+                &[b"adopter", pa.key.as_ref(), who.key.as_ref(), &terms],
+            )?;
+            create(
+                who,
+                candidate,
+                sys,
+                pid,
+                128,
+                &[
+                    b"adopter",
+                    pa.key.as_ref(),
+                    who.key.as_ref(),
+                    &terms,
+                    &[bump],
+                ],
+            )?;
+            // Immutable, candidate-specific acceptance. Other claimants cannot replace it.
+            return save(
+                candidate,
+                &AdoptionCandidate {
+                    tag: 11,
+                    project: *pa.key,
+                    owner: *who.key,
+                    terms,
+                },
+            );
+        }
+        Action::SelectAdopter {
+            nonce,
+            owner,
+            terms,
+            report,
+        } => {
+            governor(who, &f)?;
+            hash(&report)?;
+            hash(&terms)?;
+            check(
+                !p.adopted
+                    && p.adoption_at == 0
+                    && !p.adoption_challenged
+                    && p.adoption_nonce == nonce
+                    && owner != Pubkey::default(),
+            )?;
+            let candidate = next_account_info(it)?;
+            pda(
+                pid,
+                candidate,
+                &[b"adopter", pa.key.as_ref(), owner.as_ref(), &terms],
+            )?;
+            let accepted: AdoptionCandidate = load(candidate, pid, 11)?;
+            check(
+                accepted.project == *pa.key && accepted.owner == owner && accepted.terms == terms,
+            )?;
+            p.owner = owner;
+            p.adoption_hash = terms;
+            p.adoption_at = now
+                .checked_add(NOTICE)
+                .ok_or(ProgramError::ArithmeticOverflow)?;
         }
         Action::FinalizeAdoption => {
             check(!p.adopted && p.adoption_at > 0 && now >= p.adoption_at)?;
@@ -1314,6 +1401,11 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             governor(who, &f)?;
             hash(&report)?;
             check(!p.adopted)?;
+            p.adoption_nonce = p
+                .adoption_nonce
+                .checked_add(1)
+                .ok_or(ProgramError::ArithmeticOverflow)?;
+            p.adoption_challenged = false;
             p.owner = Pubkey::default();
             p.adoption_at = 0;
             p.adoption_hash = [0; 32];

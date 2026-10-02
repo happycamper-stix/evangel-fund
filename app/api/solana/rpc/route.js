@@ -8,7 +8,6 @@ export async function POST(request) {
     const body = await readJson(request, 3000);
     if (!solanaConfig().configured)
       throw new RequestError("Solana factory deployment is pending.", 503);
-    await assertCluster();
     let params;
     switch (body.method) {
       case "getLatestBlockhash":
@@ -29,6 +28,8 @@ export async function POST(request) {
       default:
         throw new RequestError("Unsupported RPC method");
     }
+    // Reject unsupported methods and malformed inputs before spending RPC calls.
+    await assertCluster();
     return Response.json(
       { result: await rpc(body.method, params) },
       { headers: { "Cache-Control": "no-store" } },

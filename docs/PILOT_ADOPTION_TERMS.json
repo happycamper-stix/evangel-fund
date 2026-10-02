@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "purpose": "Evangel tokenless OSS Devnet funding pilot",
+  "cluster": "devnet",
+  "program": "Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV",
+  "project": "7nHAfLoBSaNe8UQJFqCP7np5eRwpVNk1hDBxr8wRPwHT",
+  "repository": "https://github.com/happycamper-stix/evangel-fund",
+  "repositoryId": 1402434191,
+  "owner": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+  "scope": "Exercise refundable test-SOL sponsorship, declared owner or contributor payroll, delivery review, challenges and failed-work reopening. No mainnet funds or token launch is authorized by these terms.",
+  "acceptance": "The owner accepts these exact UTF-8 file bytes by signing requestAdoption with their SHA-256 digest. Publication and identity verification alone do not constitute acceptance or governance approval.",
+  "governance": "Existing independent Squads 2-of-3 reviewers and the two-day quorum timelock apply. Approval begins an additional two-day adoption notice. Governance must recheck repository control and wallet binding.",
+  "funding": "Tokenless adoption pays no upfront SOL. Sponsorships are refundable by their sponsor for 24 hours; only settled funds may be committed. The current pilot caps are 10 SOL lifetime repository funding and 1 SOL per payroll milestone.",
+  "work": "Plans require objective acceptance criteria, budget, deadline, evidence and declared recipient conflicts. Plan approval does not authorize payment. Completion, challenges and failed-work reopening follow deployed custody rules. Failed work retains its allocation for another eligible community worker.",
+  "limitations": "Devnet only. The deployed binary retains the published pending-adoption contention finding until a separately reviewed governance upgrade. These terms do not modify protocol rules or promise compensation."
+}

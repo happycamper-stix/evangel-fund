@@ -691,3 +691,150 @@ test("documented open risk: an unverified pending adopter blocks another request
   );
   assert.equal(f.read(f.keys.project).owner, f.owner.address);
 });
+
+test("governance selects a verified adopter without an attacker repeatedly invalidating its epoch", async () => {
+  const f = await setup();
+  await f.send(
+    f.call("requestAdoption", { terms: HASH }, [f.keys.project], f.worker),
+    f.worker,
+  );
+  const nonce = BigInt(f.read(f.keys.project).adoptionNonce);
+  const candidate = await pda(
+    f.program,
+    "adopter",
+    pub(f.keys.project),
+    pub(f.owner.address),
+    Uint8Array.from({ length: 32 }, () => 3),
+  );
+  await f.send(
+    f.call("submitAdoptionCandidate", { terms: "03".repeat(32) }, [
+      f.keys.project,
+      candidate,
+      SYSTEM,
+    ]),
+  );
+  const args = {
+    nonce,
+    owner: f.owner.address,
+    terms: "03".repeat(32),
+    report: HASH,
+  };
+  assert.ok(
+    (await f.send(
+      f.call("selectAdopter", args, [f.keys.project, candidate], f.worker),
+      f.worker,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  assert.ok(
+    (await f.send(
+      f.call(
+        "requestAdoption",
+        { terms: "04".repeat(32) },
+        [f.keys.project],
+        f.worker,
+      ),
+      f.worker,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  assert.equal(BigInt(f.read(f.keys.project).adoptionNonce), nonce);
+  for (const [badArgs, accounts] of [
+    [args, [f.keys.project]],
+    [args, [f.keys.project, f.keys.project]],
+    [{ ...args, terms: "04".repeat(32) }, [f.keys.project, candidate]],
+    [{ ...args, owner: f.worker.address }, [f.keys.project, candidate]],
+  ]) {
+    assert.ok(
+      (await f.send(
+        f.call("selectAdopter", badArgs, accounts),
+        f.owner,
+        true,
+      )) instanceof FailedTransactionMetadata,
+    );
+  }
+  assert.ok(
+    (await f.send(
+      f.call(
+        "submitAdoptionCandidate",
+        { terms: args.terms },
+        [f.keys.project, candidate, SYSTEM],
+        f.worker,
+      ),
+      f.worker,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  assert.equal(f.read(candidate).owner, f.owner.address);
+  await f.send(f.call("selectAdopter", args, [f.keys.project, candidate]));
+  assert.equal(f.read(f.keys.project).owner, f.owner.address);
+  assert.equal(f.read(f.keys.project).adoptionHash, args.terms);
+  assert.ok(
+    (await f.send(
+      f.call("finalizeAdoption", {}, [
+        f.keys.project,
+        f.keys.mint,
+        f.keys.reserve,
+        f.ownerToken,
+        TOKEN,
+      ]),
+      f.owner,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  assert.ok(
+    (await f.send(
+      f.call("selectAdopter", { ...args, owner: f.worker.address }, [
+        f.keys.project,
+      ]),
+      f.owner,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  await f.send(f.call("rejectAdoption", { report: HASH }, [f.keys.project]));
+  f.svm.expireBlockhash();
+  assert.ok(
+    (await f.send(
+      f.call("selectAdopter", args, [f.keys.project, candidate]),
+      f.owner,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  assert.equal(BigInt(f.read(f.keys.project).adoptionNonce), nonce + 1n);
+  await f.send(
+    f.call("selectAdopter", { ...args, nonce: nonce + 1n }, [
+      f.keys.project,
+      candidate,
+    ]),
+  );
+  assert.ok(
+    (await f.send(
+      f.call("requestAdoption", { terms: HASH }, [f.keys.project]),
+      f.owner,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+  f.advance(2 * 86400);
+  f.svm.expireBlockhash();
+  await f.send(
+    f.call("finalizeAdoption", {}, [
+      f.keys.project,
+      f.keys.mint,
+      f.keys.reserve,
+      f.ownerToken,
+      TOKEN,
+    ]),
+  );
+  assert.equal(f.read(f.keys.project).adopted, true);
+  assert.equal(f.tokenBalance(f.ownerToken), 210_000_000_000n);
+  assert.ok(
+    (await f.send(
+      f.call("selectAdopter", { ...args, nonce: nonce + 1n }, [
+        f.keys.project,
+        candidate,
+      ]),
+      f.owner,
+      true,
+    )) instanceof FailedTransactionMetadata,
+  );
+});

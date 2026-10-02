@@ -1,6 +1,6 @@
 # Real participant Devnet pilot
 
-Status: happycamper-stix/evangel-fund is now public and registered on Devnet. See PILOT_REGISTRATION.json. Ownership adoption, production Clerk setup and real reviewer signatures remain pending. The private repository history was not published.
+Status: happycamper-stix/evangel-fund is now public and registered on Devnet. See PILOT_REGISTRATION.json. Production GitHub OAuth and Solana wallet binding have passed the real owner verification at evangel.fund/verify. Onchain adoption and real reviewer signatures remain pending. The private repository history was not published.
 
 ## Participants and setup
 
@@ -24,3 +24,9 @@ For each step record: cluster, source commit/build hash, repository, project/mil
 ## Incident drill
 
 Introduce an altered baseline locally and confirm monitoring fails. Do not mutate live governance to test an alarm. On an unexpected code hash, authority, membership or balance change: stop new deposits and signing, preserve read-only evidence, notify the actual reviewers, independently check RPC and chain state. Do not claim the protocol is paused unless an implemented pause actually takes effect. Any upgrade requires the normal quorum and delay; never bypass that response path. Resume only after the cause and affected balances are reconciled.
+
+## Prepared owner transaction
+
+`PILOT_ADOPTION_TERMS.json` contains the exact proposed terms for the registered tokenless project. Publish this file in the public repository, pin its full commit SHA in governance evidence, and paste its exact UTF-8 contents into the project's adoption form at `/fund`. The owner must connect wallet `92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc` in Phantom and sign on Devnet. Record the finalized transaction before evaluating approval. Do not substitute the disposable operator signer for the owner.
+
+The new `selectAdopter` opcode is a local hardening candidate, not deployed. Use the existing `approveAdoption` path for the currently unclaimed pilot. Do not submit candidate-only instructions until the upgrade is approved and its deployed hash verified.

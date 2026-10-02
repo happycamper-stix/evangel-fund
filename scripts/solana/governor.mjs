@@ -122,25 +122,47 @@ if (
   throw Error(
     "The exact contributor evidence record must be independently verified.",
   );
-if (request.action === "approveAdoption") {
+if (["approveAdoption", "selectAdopter"].includes(request.action)) {
   const project = context.accounts.find((a) => a.tag === 2);
   if (
     !project ||
     !evidence.some(
       (a, i) =>
-        a.contentHash === project.adoptionHash && verification[i]?.verified,
+        a.contentHash ===
+          (request.action === "selectAdopter"
+            ? request.args.terms
+            : project.adoptionHash) && verification[i]?.verified,
     )
   )
     throw Error(
       "Verify the exact published adoption terms and wallet binding.",
     );
 }
+// A verified wallet binding is not acceptance of terms. Selection also needs
+// the candidate's immutable, wallet-signed onchain acceptance receipt.
+if (request.action === "selectAdopter") {
+  const project = context.accounts.find((a) => a.tag === 2);
+  const candidate = snapshot.adoptionCandidates?.find(
+    (a) =>
+      a.address === request.accounts[1] &&
+      a.project === project?.address &&
+      a.owner === request.args.owner &&
+      a.terms === request.args.terms,
+  );
+  if (
+    !candidate ||
+    project.adopted ||
+    project.adoptionChallenged ||
+    BigInt(project.adoptionAt) !== 0n ||
+    String(request.args.nonce) !== project.adoptionNonce
+  )
+    throw Error("Candidate acceptance receipt or adoption epoch is invalid.");
+}
 // Re-query provider identity on both evaluation and verification. Client proof JSON is never authority.
-if (["approveAdoption", "award"].includes(request.action)) {
-  const project =
-    request.action === "approveAdoption"
-      ? context.accounts.find((a) => a.tag === 2)
-      : snapshot.projects.find((a) => a.address === milestone?.project);
+if (["approveAdoption", "selectAdopter", "award"].includes(request.action)) {
+  const project = ["approveAdoption", "selectAdopter"].includes(request.action)
+    ? context.accounts.find((a) => a.tag === 2)
+    : snapshot.projects.find((a) => a.address === milestone?.project);
   if (!project || !request.identity?.userId || !process.env.CLERK_SECRET_KEY)
     throw Error(
       "Verified GitHub and Solana identity is required before approval.",
@@ -149,14 +171,13 @@ if (["approveAdoption", "award"].includes(request.action)) {
     client: createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }),
     userId: request.identity.userId,
     repository: project.source,
-    wallet:
-      request.action === "approveAdoption"
-        ? request.args.owner
-        : submission.worker,
+    wallet: ["approveAdoption", "selectAdopter"].includes(request.action)
+      ? request.args.owner
+      : submission.worker,
     pullRequest: request.identity.pullRequest,
   });
   if (
-    request.action === "approveAdoption" &&
+    ["approveAdoption", "selectAdopter"].includes(request.action) &&
     !["owner", "admin", "maintainer"].includes(identity.role)
   )
     throw Error(

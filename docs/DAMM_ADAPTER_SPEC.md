@@ -28,4 +28,4 @@ Approved October 2: fees are booked to the UTC day Evangel actually collects the
 2. Build and test CPI account mappings, exact fee serialization, one-sided price/range math and full-liquidity locking against that binary.
 3. Implement the versioned Rust adapter and canonical balance-delta receipt accounting; do not change legacy fixture weights and call it integrated.
 4. Run adversarial real-binary tests: account substitution, unlocked positions, unauthorized NFT delegates, excessive fees, altered mint extensions, overflow, replay, claim failure and atomic rollback.
-5. Reviewer-approved Devnet upgrade/deployment, full launch/trading/settlement pilot, external review, then a separately authorized capped mainnet release.
+5. Reviewer-approved Devnet upgrade/deployment, full launch/trading/settlement pilot, published first-party security review with explicit limitations, then a separately authorized capped mainnet release.

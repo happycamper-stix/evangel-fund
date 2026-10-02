@@ -365,8 +365,8 @@
       {
         "title": "Open findings",
         "paragraphs": [
-          "EV-01 (medium): an unverified pending adopter can block another adoption request until governance rejects it. Repeated contention can delay onboarding; it does not grant withdrawal rights. This behavior is reproduced in local compiled-program tests.",
-          "EV-02 (medium): public state/RPC endpoints need aggregate shared request limits to reduce service-exhaustion and provider-cost risk. EV-05 (informational): upstream bincode 1.3.3 is flagged as unmaintained."
+          "EV-01 (medium): an unverified pending adopter can block another adoption request until governance rejects it. Repeated contention can delay onboarding; it does not grant withdrawal rights. This behavior is reproduced in local compiled-program tests. A local candidate now supports immutable wallet-signed adoption terms and quorum selection despite a pending claimant; the deployed program still needs a reviewed upgrade.",
+          "EV-02 (medium): public state/RPC endpoints need aggregate shared request limits to reduce service-exhaustion and provider-cost risk. EV-05 (informational): upstream bincode 1.3.3 is flagged as unmaintained. An aggregate Vercel rule is now published at 600 requests/minute; live threshold testing and alerting remain outstanding."
         ]
       },
       {
