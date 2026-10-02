@@ -1,0 +1,32 @@
+{
+  "status": "local candidate; not deployed onchain",
+  "implementationCommit": "10df5b4",
+  "custodyBinarySha256": "bb8f9a66558b4a36ffa209cabb5a70da94ee823a945942cf8203c7b56f7dbbbd",
+  "testFixtures": false,
+  "deployedDevnetBinarySha256": "7b9aa4d9b1aafe979fdfb7137d6106c8f70378e65040538b50df045f83d57382",
+  "validation": {
+    "unitAndIntegrationTests": 60,
+    "browserTests": 48,
+    "realSquadsBinaryTests": ["approveAdoption", "selectAdopter"],
+    "webBuild": "passed",
+    "npmAuditVulnerabilities": 0,
+    "cargoAuditWarning": "RUSTSEC-2025-0141: bincode is unmaintained",
+    "devnetMonitor": "passed against unchanged deployed baseline",
+    "liveWrongWalletVerification": "rejected",
+    "publicSnapshotSecretScan": "no leaks found"
+  },
+  "upgradeRequirements": [
+    "Review append-only adoption opcodes and immutable candidate acceptance accounts",
+    "Verify candidate build provenance and binary digest",
+    "Independent Squads 2-of-3 approval and actual timelock",
+    "Finalized upgrade receipt and updated independently checked deployment baseline",
+    "Real candidate/adoption pilot before declaring EV-01 closed"
+  ],
+  "remaining": [
+    "Owner-signed Devnet pilot acceptance and independent reviewer approvals",
+    "Public Devnet sponsorship, refund, payroll, challenge and reopening receipts",
+    "Controlled production rate-limit enforcement test and alerting",
+    "DAMM v2 binary provenance, adapter implementation and real-binary integration tests",
+    "Mainnet remains disabled"
+  ]
+}
