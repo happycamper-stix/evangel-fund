@@ -1,0 +1,26 @@
+name: Verify Devnet custody
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: devnet-custody-monitor
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      NEXT_PUBLIC_EVANGEL_SOLANA_CLUSTER: devnet
+      EVANGEL_SOLANA_PROGRAM: Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV
+      EVANGEL_GOVERNANCE_MULTISIG: 4jiu9tuEWQueXfhPd6HwvVVzpZr2pvVrtrcEyMCb1VMh
+      EVANGEL_DEPLOYMENT_BASELINE: docs/DEVNET_ADDRESSES.json
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Verify deployed code, governance and balances
+        run: node scripts/solana/monitor.mjs

@@ -1,0 +1,223 @@
+.docs-layout {
+  max-width: 1280px;
+  margin: auto;
+  padding: 48px 40px 80px;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 64px;
+}
+.docs-sidebar {
+  position: sticky;
+  top: 28px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow: auto;
+  padding-right: 12px;
+}
+.docs-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  margin: 22px 0;
+}
+.docs-sidebar nav a {
+  padding: 10px 8px;
+  border-left: 2px solid transparent;
+  font-size: 13px;
+  color: #bcb8ac;
+  display: flex;
+  gap: 12px;
+}
+.docs-sidebar nav a span {
+  font: 10px/2 monospace;
+  color: #a39a88;
+}
+.docs-sidebar nav a[aria-current] {
+  border-color: #ff704c;
+  background: #2c251e;
+  color: #ff9274;
+}
+.docs-sidebar small,
+.docs-search-status {
+  font-size: 11px;
+  color: #bcb8ac;
+}
+.docs-search-status {
+  min-height: 20px;
+}
+.docs-article {
+  min-width: 0;
+  max-width: 830px;
+}
+.docs-intro {
+  padding-bottom: 32px;
+  border-bottom: 1px solid #45443d;
+}
+.docs-intro h1 {
+  font-size: clamp(38px, 4.7vw, 64px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin-bottom: 18px;
+}
+.docs-intro > p:last-child {
+  font-size: 18px;
+  max-width: 660px;
+}
+.docs-toc {
+  background: #e8e2d2;
+  color: #18130f;
+  padding: 24px 28px;
+  margin: 34px 8px 46px 0;
+  box-shadow: 7px 7px 0 #ff572d;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 28px;
+}
+.docs-toc strong {
+  grid-column: 1/-1;
+  font: 11px monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.docs-toc a {
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.docs-section {
+  scroll-margin-top: 28px;
+  padding: 0 0 32px;
+  margin: 0 0 34px;
+  border-bottom: 1px solid #45443d;
+}
+.docs-section h2 {
+  font-size: 27px;
+  margin-bottom: 20px;
+}
+.docs-section p {
+  line-height: 1.85;
+  margin-bottom: 16px;
+  max-width: 740px;
+}
+.docs-section li {
+  color: #d0c7b6;
+  line-height: 1.8;
+  padding-left: 4px;
+  margin-bottom: 12px;
+}
+.docs-section ul {
+  padding-left: 22px;
+}
+.docs-section pre {
+  background: #0b0b0a;
+  border: 1px solid #45443d;
+  padding: 22px;
+  color: #e8e2d2;
+  overflow: auto;
+  line-height: 1.85;
+  font-size: 12px;
+}
+.docs-section pre code {
+  font-size: 12px;
+  white-space: pre;
+}
+.docs-table {
+  overflow: auto;
+  border: 1px solid #45443d;
+  margin: 24px 0;
+}
+.docs-app .docs-table table {
+  min-width: 540px;
+}
+.docs-app .docs-table th {
+  color: #ff9274;
+  background: #2c251e;
+  font-weight: 700;
+  padding: 16px;
+}
+.docs-app .docs-table td {
+  padding: 16px;
+  vertical-align: top;
+  line-height: 1.65;
+}
+.docs-app .docs-table :is(th, td):last-child {
+  text-align: left;
+}
+.docs-pagination {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+.docs-pagination a {
+  flex: 1;
+  border: 1px solid #74604b;
+  padding: 20px;
+  font-weight: 700;
+  font-size: 16px;
+}
+.docs-pagination a:hover {
+  background: #2c251e;
+}
+.docs-pagination small {
+  display: block;
+  font: 10px monospace;
+  letter-spacing: 1.5px;
+  color: #ff9274;
+  margin-bottom: 10px;
+}
+@media (max-width: 1000px) {
+  .docs-layout {
+    padding: 35px 24px;
+    gap: 32px;
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .docs-layout {
+    display: block;
+    padding: 28px 22px 50px;
+  }
+  .docs-sidebar {
+    position: static;
+    max-height: none;
+    padding: 0 0 20px;
+    border-bottom: 1px solid #45443d;
+    margin-bottom: 30px;
+  }
+  .docs-sidebar nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .docs-sidebar nav a {
+    font-size: 12px;
+    padding: 8px 5px;
+    gap: 6px;
+  }
+  .docs-sidebar small {
+    display: none;
+  }
+  .docs-intro h1 {
+    font-size: 40px;
+  }
+  .docs-toc {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+  .docs-section h2 {
+    font-size: 25px;
+  }
+  .docs-pagination {
+    flex-direction: column;
+  }
+  .docs-section pre {
+    padding: 16px;
+  }
+}
+
+.docs-section p,
+.docs-section li {
+  overflow-wrap: anywhere;
+}

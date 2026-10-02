@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-10-02T22:26:50.741Z",
+  "slot": 452744199,
+  "commitment": "finalized",
+  "venue": {
+    "program": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+    "revision": "a85c926607433f23f0ea60f4ca7b1ae92f4156cb",
+    "protocolFeePercent": 20
+  },
+  "mint": "CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU",
+  "decimals": 6,
+  "extensions": [
+    "metadataPointer",
+    "tokenMetadata"
+  ],
+  "mintAuthority": null,
+  "freezeAuthority": null,
+  "venuePermissionlessMintCompatible": true,
+  "adapterEnabled": false,
+  "limitations": [
+    "Source compatibility does not verify the deployed venue binary.",
+    "No pool, position, price, liquidity depth or fee receipt has been verified."
+  ]
+}

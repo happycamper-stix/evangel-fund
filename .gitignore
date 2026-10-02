@@ -1,0 +1,34 @@
+lib/secrets/
+node_modules/
+.next/
+.env
+.env*.local
+.DS_Store
+.claude/
+out/
+cache/
+broadcast/
+playwright-report/
+test-results/
+data/
+
+.env.*
+!.env.example
+evaluation*.json
+sponsored-action.json
+
+# Local evaluator outputs, locks and profiles
+.evangel/
+.vercel
+
+# Isolated integration-test build output
+.next-*
+
+# Solana compiled programs and local deployment keys
+solana/program/target/
+solana/program/.cargo/
+.env*
+
+# Local marketplace skill installation
+.agents/
+skills-lock.json

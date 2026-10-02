@@ -1,0 +1,48 @@
+{
+  "name": "evangel",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "solana:build": "node scripts/solana/build.mjs",
+    "solana:deploy": "node --env-file-if-exists=.env.local scripts/solana/deploy.mjs",
+    "solana:preflight": "node scripts/solana/preflight.mjs",
+    "solana:fixture": "node scripts/solana/fixture.mjs",
+    "governor:evaluate": "node --env-file-if-exists=.env.local scripts/solana/governor.mjs evaluate",
+    "governor:verify": "node --env-file-if-exists=.env.local scripts/solana/governor.mjs verify",
+    "test": "npm run solana:references && npm run solana:build && npm run solana:build:fixtures && npm run test:unit",
+    "test:unit": "node --test tests/*.test.mjs",
+    "test:solana": "node --test tests/solana*.test.mjs",
+    "test:browser": "playwright test",
+    "security:dependencies": "npm audit",
+    "security:rust": "cargo audit --file solana/program/Cargo.lock",
+    "solana:build:fixtures": "node scripts/solana/build.mjs --test-fixtures",
+    "solana:references": "node scripts/solana/references.mjs",
+    "solana:governance": "node --env-file-if-exists=.env.local scripts/solana/governance-setup.mjs",
+    "solana:compatibility": "node scripts/solana/launch-compatibility.mjs",
+    "security:monitor": "node --env-file-if-exists=.env.local scripts/solana/monitor.mjs",
+    "solana:settle-days": "node --env-file-if-exists=.env.local scripts/solana/settle-days.mjs",
+    "solana:inspect-quote": "node scripts/solana/inspect-quote.mjs"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.21.1",
+    "@clerk/nextjs": "^7.9.9",
+    "@solana-program/system": "0.15.0",
+    "@solana-program/token-2022": "0.19.0",
+    "@solana/kit": "8.4.0",
+    "@vercel/firewall": "^1.2.5",
+    "@wallet-standard/app": "1.1.0",
+    "ai": "^6.0.277",
+    "next": "16.3.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "litesvm": "1.5.0",
+    "prettier": "^3.9.6"
+  }
+}

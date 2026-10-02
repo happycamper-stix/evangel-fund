@@ -1,0 +1,40 @@
+{
+  "cluster": "devnet",
+  "program": "Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV",
+  "factory": "ApQ5H1KCi5wEaoy9jHhwRAcbjGqXKkpW9nDikFrvNZ8w",
+  "governanceMultisig": "4jiu9tuEWQueXfhPd6HwvVVzpZr2pvVrtrcEyMCb1VMh",
+  "authority": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy",
+  "upgradeTransferPending": false,
+  "binarySha256": "7b9aa4d9b1aafe979fdfb7137d6106c8f70378e65040538b50df045f83d57382",
+  "quoteMint": "DSivHUw3Bq8asXrGpkFm3ZLfQX9buZtzuTb9cxQYBmRb",
+  "governanceCreationSignature": "4MnhGyfooF6HBxU7wAeeXeRnLDcjFgvWdw6iwXqZRh5G3wDuzFWDhgjQ3bMFwm72mT48wff1h3Agenhb5ZASsZoW",
+  "members": [
+    "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+    "FqXojD69EQyiT1Vckz3twzMTUXNr4yL3Qe5kcroAV2GM",
+    "5GcGNF4fTJhBiGLCqwXxFTj5tqWUjRAsGAmMvSMJ5sL4"
+  ],
+  "threshold": 2,
+  "timelockSeconds": 172800,
+  "binaryLength": 220600,
+  "governanceBaseline": {
+    "address": "4jiu9tuEWQueXfhPd6HwvVVzpZr2pvVrtrcEyMCb1VMh",
+    "vault": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy",
+    "threshold": 2,
+    "timeLock": 172800,
+    "configAuthority": "11111111111111111111111111111111",
+    "members": [
+      {
+        "address": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+        "permissions": 7
+      },
+      {
+        "address": "FqXojD69EQyiT1Vckz3twzMTUXNr4yL3Qe5kcroAV2GM",
+        "permissions": 7
+      },
+      {
+        "address": "5GcGNF4fTJhBiGLCqwXxFTj5tqWUjRAsGAmMvSMJ5sL4",
+        "permissions": 7
+      }
+    ]
+  }
+}

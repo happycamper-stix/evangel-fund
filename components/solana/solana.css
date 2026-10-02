@@ -1,0 +1,94 @@
+.sol-form {
+  display: grid;
+  gap: 16px;
+  max-width: 760px;
+  margin: 20px 0;
+}
+.sol-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.sol-field span {
+  font-size: 13px;
+  font-weight: 700;
+}
+.sol-field input,
+.sol-field textarea,
+.sol-field select {
+  width: 100%;
+  min-width: 0;
+  background: #f4f0e6;
+  color: #171715;
+  border: 1px solid #b8b2a7;
+  padding: 12px;
+  font: inherit;
+  border-radius: 0;
+}
+.sol-wallet {
+  margin: 20px 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.sol-wallet p {
+  flex-basis: 100%;
+  overflow-wrap: anywhere;
+}
+.sol-list {
+  display: grid;
+  gap: 10px;
+}
+.sol-project {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px;
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  border: 1px solid #b8b2a7;
+  font: inherit;
+}
+.sol-project span,
+.sol-note {
+  font-size: 13px;
+}
+.sol-detail details,
+.sol-row,
+.sol-milestone {
+  border-top: 1px solid #b8b2a7;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.sol-detail summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.sol-detail p,
+.sol-detail a {
+  overflow-wrap: anywhere;
+}
+.sol-milestone h4 {
+  font-size: 20px;
+  margin: 0;
+}
+.sol-detail .ev-button {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.ev-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.sol-form textarea {
+  resize: vertical;
+}
+.sol-field input:focus-visible,
+.sol-field textarea:focus-visible,
+.sol-field select:focus-visible {
+  outline: 3px solid #e35429;
+  outline-offset: 2px;
+}
+.sol-action{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:360px;overflow:auto}

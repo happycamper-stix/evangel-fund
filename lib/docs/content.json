@@ -1,0 +1,388 @@
+[
+  {
+    "slug": "overview",
+    "title": "Evangel on Solana",
+    "summary": "Social launches and governed funding for open-source work.",
+    "sections": [
+      {
+        "title": "Two parts, separate responsibilities",
+        "paragraphs": [
+          "Evangel funds repository work on Solana and is developing social token launches. There is no Evangel platform token. Custody and milestone approvals are separate from trading infrastructure.",
+          "The current deployable program supports governed repository funding on devnet. Its custom bonding curve exists only in a separately compiled local test fixture. Public launches and production e/acc trading are disabled until compatible infrastructure and the published internal security review release gates are verified."
+        ]
+      },
+      {
+        "title": "Public status",
+        "paragraphs": [
+          "A website deployment is not a contract deployment. Check the connected program, Squads vault and finalized receipts. Missing configuration leaves transactions disabled; no balances or approvals are fabricated."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "tokenomics",
+    "title": "Supply & rewards",
+    "summary": "21 million tokens. One shared release allowance.",
+    "sections": [
+      {
+        "title": "Fixed allocations",
+        "paragraphs": [
+          "The launch specification fixes supply at 21,000,000 tokens with six decimals: 14,700,000 (70%) for liquidity and 6,300,000 (30%) for governed rewards. These rules are tested in the isolated factory fixture; the public trading integration is not enabled. Mint authority is revoked atomically and freeze authority is never granted.",
+          "After verified adoption and two-day notice, 210,000 tokens (1%) go to the owner upfront. The remaining 6,090,000 (29%) require milestones. This upfront amount counts toward the first rolling window and the developer cap."
+        ]
+      },
+      {
+        "title": "Hard limits",
+        "paragraphs": [
+          "Developer rewards, including upfront, cannot exceed 4,200,000 tokens (20%). At least 2,100,000 tokens (10%) remain for community workers. All token payouts together are limited to 210,000 per rolling 21 days. Unused allowance does not accumulate.",
+          "Approved work reserves its budget. Earned community token awards receive queue priority over developer payouts. The implementation bounds active release timestamps to 256 and queued worker awards to 64; a full queue must drain before further entries. These limits cannot increase the release allowance."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "launching",
+    "title": "Launch a coin",
+    "summary": "Launch infrastructure must preserve the exact reserve and fee rules.",
+    "sections": [
+      {
+        "title": "Integration gate",
+        "paragraphs": [
+          "Our target remains 21M tokens, 70% initial liquidity, 30% governed rewards and no initial quote deposit. Network fees and account rent still apply. We will use an established trading venue only after proving these exact requirements.",
+          "Meteora DBC was evaluated against source revision f552f20aa3c1c7631427c3827aeea7c58b902813. It mints initial tokens into its pool; vesting and leftover withdrawals require graduation. That does not provide our pre-graduation adoption reward. Its protocol takes 20% of pool fees, leaving 4% for Evangel from a 5% trade fee. The approved allocation now fits that 4%, so the fee specification conflict is resolved. Reserve access and quote compatibility still block integration."
+        ]
+      },
+      {
+        "title": "Isolated curve tests",
+        "paragraphs": [
+          "Local tests exercise token-only inventory, virtual e/acc pricing and real-reserve checks. That curve is excluded from the deployable custody build. It is not an automatic production fallback. Trading on other pools is outside Evangel fee enforcement."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "adoption",
+    "title": "Creator adoption",
+    "summary": "Ownership and endorsement must be verified.",
+    "sections": [
+      {
+        "title": "Identity first",
+        "paragraphs": [
+          "Launching around someone is not proof of endorsement. At /verify, sign in, connect GitHub and verify a Solana wallet through Clerk. Evangel checks GitHub directly: personal repository ownership, admin or maintainer permissions, or an authored merged pull request for contributor history. Organization membership and write access alone do not establish ownership. Public non-fork GitHub repositories are currently supported.",
+          "The factory authority approves the exact owner and terms hash. There is a two-day challenge window. Finalization releases 1% upfront for coin projects; tokenless funding repositories receive no automatic SOL payout."
+        ]
+      },
+      {
+        "title": "Disputed identity",
+        "paragraphs": [
+          "A challenge pauses adoption. The agent must review again; invalid candidates can be rejected by the authority. Source identity remains an evidence-review responsibility, not a claim inferred from an account name."
+        ]
+      },
+      {
+        "title": "Fresh checks before approval",
+        "paragraphs": [
+          "The governor requires an identity.userId in adoption and worker-award requests and independently rechecks GitHub and the verified wallet during both evaluation and verification. Adoption requires owner, admin or maintainer authority for the project source; contributor history alone cannot claim a project. Workers may be new contributors: verified identity does not replace delivery evidence or milestone acceptance.",
+          "The verification response is a short-lived informational result, not a signed payment authorization. Never trust a copied badge or client-supplied role. Stable GitHub user and repository IDs are included in review context. Squads reviewers still approve the exact transaction; these offchain checks do not add an onchain OAuth oracle or remove the quorum requirement.",
+          "GitHub OAuth and Solana wallet connections must be enabled in Clerk. Public production authentication requires a configured live instance and evangel.fund domain. No private keys, OAuth access tokens or wallet signatures are exposed by the verification API."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "governance",
+    "title": "Milestones & governance",
+    "summary": "Owners propose. The agent verifies. Workers deliver.",
+    "sections": [
+      {
+        "title": "Agree the work",
+        "paragraphs": [
+          "The repo owner proposes a reward, submission deadline and immutable milestone document containing objective, acceptanceCriteria, ossImpact and evidenceRequired. Publish it at a GitHub blob URL pinned to a full commit. The onchain SHA-256 must match its exact text.",
+          "The governance agent assesses feasibility, measurable acceptance criteria, budget and benefit to the repository’s OSS field. Reject malice, fraud, unrelated work, duplicate compensation and hidden related-party recipients. Missing evidence requires abstention. Plan approval locks budget but never authorizes payment."
+        ]
+      },
+      {
+        "title": "Review completion",
+        "paragraphs": [
+          "Workers submit a hash of their published evidence record before the deadline. The agent independently checks every criterion and the exact contributor identity. Completion approval has its own two-day challenge window. Anyone can then execute the authorized payout to its fixed recipient. The repo owner does not have an additional payout veto."
+        ]
+      },
+      {
+        "title": "Failed work fuels the community",
+        "paragraphs": [
+          "An agent-approved reopening keeps the reward and criteria, increments the work revision, removes any old award, and makes the work a community bounty. A fresh 21-day submission period begins after two-day notice. Former submissions cannot authorize the new revision. The last failed award recipient cannot immediately reclaim the reopened work.",
+          "The developer and factory authority cannot receive community rewards. Developer commitments converted into community work remain protected; cancelling cannot move that budget back to discretionary developer spending."
+        ]
+      },
+      {
+        "title": "Quorum and independent review",
+        "paragraphs": [
+          "The deployable custody program requires an autonomous Squads v4 2-of-3 vault with the foundation and two independent reviewers. No unilateral config authority is permitted. Threshold, membership and a minimum two-day timelock are rechecked for governed execution. Independent wallet ownership remains a human verification responsibility.",
+          "The agent has no keys. It evaluates evidence and prepares unsigned actions. A member proposes the exact reviewed instruction; reviewers approve it independently. Quorum execution waits at least two days, and milestone/adoption approvals then enter their own two-day challenge window. Governance actions expire within seven days; stale revisions and replayed claims fail.",
+          "Two reviewers may still collude or approve bad evidence. Squads does not prove the quality of work. The official devnet Squads deployment is upgradeable by its operator; the immutable mainnet binary is used in local integration tests. Pilot upgrade authority should belong to the quorum vault; irreversible revocation follows audit and stabilization."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "fees",
+    "title": "Trading fees",
+    "summary": "5% on buys. 5% on sells. Development comes first.",
+    "sections": [
+      {
+        "title": "Approved target; integration pending",
+        "paragraphs": [
+          "These are the October 2 approved production economics. The new net-receipt allocation is tested independently. The isolated local curve still models the previous fee version and does not implement venue protocol collection. Trading remains disabled until the adapter and custody accounting pass end-to-end verification."
+        ]
+      },
+      {
+        "title": "Four purposes",
+        "paragraphs": [
+          "Each trade pays 5% of its gross e/acc quote value: 2.55% for the project development treasury, 0.5% for community contributors, 0.8% for governance inference/API costs, 0.15% for the foundation, and 1% for the venue protocol. Evangel receives the remaining 4%; its net receipts are allocated 63.75% development, 12.5% community, 20% governance and 3.75% foundation.",
+          "For a 100 e/acc buy, 95 enters the trading inventory, 2.55 goes to development, 0.5 to contributors, 0.8 to governance, 0.15 to the foundation and 1 to the venue protocol. A sell deducts 5% from its gross e/acc output. Integer fees round upward to the nearest base unit. Network fees and rent are separate SOL costs."
+        ]
+      },
+      {
+        "title": "Developer income without milestone permission",
+        "paragraphs": [
+          "After verified adoption, development fees are automatically claimable to the fixed project owner. Anyone can trigger payment, but cannot change its recipient. Before adoption, income remains protected for the eventual verified owner. Community fee funds follow objective milestones, completion review and challenge periods."
+        ]
+      },
+      {
+        "title": "Daily governance surplus",
+        "paragraphs": [
+          "Venue fees count toward the UTC day Evangel actually collects them. Delayed collections do not reopen earlier days. Each project and UTC collection day has a separate e/acc token vault. At daily close, unused governance fees and allocation dust become that same project’s development balance. Approved unpaid expenses remain reserved. No other project can receive the surplus. Closing twice fails; late settlement remains callable.",
+          "A keeper submits settlement and development payout together after midnight UTC. Programs do not wake themselves up. The runner is implemented; an active funded scheduler and verified deployment are operational prerequisites, not implied by local tests."
+        ]
+      },
+      {
+        "title": "Expenses and quorum timing",
+        "paragraphs": [
+          "An incurred inference/API invoice is proposed for a future reimbursement booking day so the Squads two-day delay can elapse. Only fees available on the execution day can be reserved; the service date may be earlier. The operator fronts costs. Missing the booking day needs a new proposal, and insufficient fees may leave costs unreimbursed. Merely submitting an invoice does not reserve funds or delay daily surplus.",
+          "Approval binds invoice identity, project, quote mint, base-unit amount and evidence. The test pilot caps approvals at 100 dummy quote tokens per project UTC day. Payment waits a further two-day notice and goes only to the governance vault. Canceling an unpaid expense returns it to that day’s governance budget before close, or development after close. Paid or canceled invoices cannot be charged again. Paying fiat vendors remains an accountable offchain duty."
+        ]
+      },
+      {
+        "title": "Venue compatibility",
+        "paragraphs": [
+          "The 5% specification is tested locally, not a claim that a production pool is live. External venue charges must be reconciled before activation; no silent fee increase is authorized. External pools and ordinary wallet transfers are outside Evangel fee enforcement."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "eacc-support",
+    "title": "e/acc pairing",
+    "summary": "One quote asset across every project. No buy-and-burn.",
+    "sections": [
+      {
+        "title": "Existing asset",
+        "paragraphs": [
+          "All project tokens pair against existing e/acc: CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU on Solana mainnet, Token-2022 with six decimals. Evangel issues no platform token or replacement e/acc mint. Devnet and local tests use a clearly separate dummy quote mint."
+        ]
+      },
+      {
+        "title": "How pairing works",
+        "paragraphs": [
+          "Buyers supply e/acc and receive project tokens; sellers return project tokens and receive available e/acc. Fees stay denominated in the quote asset. Pairing does not burn tokens or guarantee net demand. The old buy-and-burn instruction is permanently rejected."
+        ]
+      },
+      {
+        "title": "Current status",
+        "paragraphs": [
+          "The isolated test curve uses real quote-token transfers, no initial developer quote deposit, and virtual quote pricing that cannot be withdrawn. The deployable custody build rejects curve launches and swaps. Mainnet e/acc extensions and venue compatibility still require review; unsupported mint behavior fails closed."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "pairing-assets",
+    "title": "Pairing assets",
+    "summary": "Every project pairs with e/acc.",
+    "sections": [
+      {
+        "title": "Required quote asset",
+        "paragraphs": [
+          "The current launch specification requires e/acc. SOL remains useful for network fees, rent and separate repository sponsorships, but is not the launch quote asset. Arbitrary assets and tokenized stocks are outside this version."
+        ]
+      },
+      {
+        "title": "No initial quote deposit",
+        "paragraphs": [
+          "The isolated bonding-curve fixture starts with 70% project-token inventory and zero real e/acc. Buyers build the real quote reserve. A sell cannot withdraw virtual liquidity. A production venue must support these requirements; a conventional two-sided pool cannot be created with imaginary backing."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "trading",
+    "title": "Trade a launch",
+    "summary": "No public trading adapter is enabled yet.",
+    "sections": [
+      {
+        "title": "Compatibility before activation",
+        "paragraphs": [
+          "The trading provider must support the reserve, supply and fee specification without hidden compromises. Meteora DBC currently conflicts with immediate reserve access and the exact 5% fee distribution. New public launches stay disabled pending resolution."
+        ]
+      },
+      {
+        "title": "Local curve behavior",
+        "paragraphs": [
+          "The isolated local test curve uses a token-only initial inventory. Virtual e/acc sets prices but cannot be paid out. Every sell requires real e/acc backing, exact vault bindings and minimum output. These tests inform the specification; they do not make the custom curve the production venue."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "funding",
+    "title": "Fund open source",
+    "summary": "Contributors and repo owners earn payroll through verified delivery.",
+    "sections": [
+      {
+        "title": "Two distinct funding sources",
+        "paragraphs": [
+          "Trading development fees are automatic project income after adoption. They require no work milestone. Contributor quote fees are protected for community work. Separately, voluntary SOL sponsorships retain their agreed milestone requirements for contributors or declared owner payroll."
+        ]
+      },
+      {
+        "title": "Sponsor a repository",
+        "paragraphs": [
+          "A repo can receive funding without launching a coin. Register its GitHub root URL, verify ownership and the Solana wallet binding through governance, then accept SOL sponsorships. Sponsorships have a 24-hour refund period. Only settled funds may be committed."
+        ]
+      },
+      {
+        "title": "Declared owner payroll",
+        "paragraphs": [
+          "SOL milestones may pay a contributor or explicitly name the repository owner. Owner payroll is not disguised as a community bounty. It follows the same plan review, evidence submission, completion approval and challenge process. Approving a plan never pays it.",
+          "SOL payroll does not consume project-token supply caps. Community token allocations remain protected. Failed owner work becomes a community bounty with its budget and criteria preserved; old evidence cannot unlock the reopened work."
+        ]
+      },
+      {
+        "title": "Pilot caps",
+        "paragraphs": [
+          "Lifetime accounted funding is capped at 10 SOL per repository; a sponsorship refund returns unused headroom. Each SOL payroll milestone is capped at 1 SOL. These are conservative test-pilot bounds, not a promise of mainnet activation."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "security",
+    "title": "Security & trust",
+    "summary": "Constrained custody, independent review and explicit remaining risks.",
+    "sections": [
+      {
+        "title": "Controls in code",
+        "paragraphs": [
+          "Launch fixtures revoke mint authority and never grant freeze authority. Custody enforces fixed recipients, protected budgets, token caps, exact account bindings, replay resistance and challenge windows. Unsafe single-wallet initialization is rejected in the deployable build. The old OTC settlement always fails closed.",
+          "The test suite executes compiled custody and the immutable Squads v4 binary in LiteSVM. It checks one-signer rejection, quorum delay, real cross-program invocation and replay rejection. Tests are not an independent audit or public deployment receipts."
+        ]
+      },
+      {
+        "title": "Remaining trust",
+        "paragraphs": [
+          "Agent reports can be wrong. Two signers can collude. A private key or a wallet address does not establish independence. Governance cannot cryptographically prove source ownership, honest invoices or useful work. Upgrades remain a custody risk until authority is irreversibly removed; upstream protocol authorities must also be disclosed.",
+          "The Rust dependency tree still includes unmaintained bincode through the Solana SDK. No clean scanner output is a proof against exploitation."
+        ]
+      },
+      {
+        "title": "Deployment gates",
+        "paragraphs": [
+          "No mainnet writes are enabled. Compatible trading infrastructure, verified e/acc quote-asset compatibility, published internal security review, remediated findings, verified builds, capped pilot monitoring and a properly funded bug bounty must precede production. No auditor, bounty funding or security guarantee is invented."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "deployment",
+    "title": "Deployment & operations",
+    "summary": "Verify contracts and governance before connecting the website.",
+    "sections": [
+      {
+        "title": "Build and test",
+        "paragraphs": [
+          "npm test fetches a hash-pinned immutable Squads binary for local tests, builds custody without trading fixtures, builds a separate fixture binary, and runs behavioral tests. npm run build and npm run test:browser verify the website. npm run security:dependencies and npm run security:rust inspect dependencies.",
+          "The custody build manifest records its SHA-256. Deployment rejects fixture builds or changed binaries. Neither local tests nor a website deployment publish a Solana factory."
+        ]
+      },
+      {
+        "title": "Devnet ownership",
+        "paragraphs": [
+          "Supply two independent reviewer public addresses. npm run solana:governance -- ADDRESS_ONE ADDRESS_TWO prepares a devnet 2-of-3 multisig; --broadcast explicitly submits creation. Set EVANGEL_GOVERNANCE_MULTISIG to the multisig account, from which vault 0 is derived. Do not confuse the account with the vault.",
+          "npm run solana:fixture -- deploy creates only a dummy mint. npm run solana:deploy is read-only preflight; --broadcast deploys custody, initializes verified quorum governance and transfers upgrade authority to that vault. Test SOL, independent signers and verified finalized receipts are required. Never put a signing key into Vercel, the browser, inference inputs or Git."
+        ]
+      },
+      {
+        "title": "Monitor and stabilize",
+        "paragraphs": [
+          "npm run security:monitor checks backing, governance, token authorities and upgrade authority. After the published security review, remediation and a capped pilot, revoke upgrades through a reviewed Squads proposal; this is irreversible. Publish new opt-in program versions for future projects instead of rewriting existing custody promises."
+        ]
+      },
+      {
+        "title": "Daily settlement runner",
+        "paragraphs": [
+          "npm run solana:settle-days prints a read-only plan based on finalized chain time. --broadcast uses the local test-only Keychain payer to settle closed days and send available development income to fixed adopted owners. Run after 00:00 UTC from a funded protected host; failed or late runs leave all claims available. No signing key belongs in Vercel.",
+          "This version uses factory tag 10. Legacy SOL fee deployments are rejected rather than reinterpreted. Deploy a fresh program with fresh journals; any future funded migration requires a separately reviewed plan."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "contracts",
+    "title": "Program reference",
+    "summary": "Solana custody is separate from trading and key management.",
+    "sections": [
+      {
+        "title": "Program and clients",
+        "paragraphs": [
+          "solana/program/src/lib.rs implements custody and milestone state transitions. fees.rs fixes the four allocations; governance.rs validates Squads; fees.rs also implements daily surplus and invoice-bound reimbursement. lib/solana/program.mjs is the matching client codec. lib/solana/squads.mjs builds a narrow subset of official Squads v4 instructions, tested against the deployed immutable binary."
+        ]
+      },
+      {
+        "title": "Production separation",
+        "paragraphs": [
+          "The deployable build rejects custom-curve launch and swap actions. A separate test-fixtures build exercises supply and release invariants. The old negotiated buy/burn opcode rejects execution in both builds. No general CPI router or emergency sweep exists."
+        ]
+      },
+      {
+        "title": "Reviewable actions",
+        "paragraphs": [
+          "Milestones bind amounts, criteria, recipients, evidence and revisions. Governed actions carry an onchain expiration and require the verified Squads vault signature. Foundation and expense claims are fixed-recipient and cannot use other budgets. Repository-owner SOL payroll is explicit and evidence-reviewed."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "internal-security-review",
+    "title": "Internal security review",
+    "summary": "First-party findings, verification and outstanding release blockers — October 2, 2026.",
+    "sections": [
+      {
+        "title": "First-party review, not independent certification",
+        "paragraphs": [
+          "This is an AI-assisted internal review by the team building Evangel. No external audit firm participated. It does not certify the absence of vulnerabilities or establish readiness for mainnet trading. Reviewed source: 08892ae31eec6d97d23801a1c0d5f79f461b9f4e.",
+          "The complete report is available at https://evangel.fund/internal-security-review.md. Source remains private; the commit hash alone does not permit public reproduction."
+        ]
+      },
+      {
+        "title": "Open findings",
+        "paragraphs": [
+          "EV-01 (medium): an unverified pending adopter can block another adoption request until governance rejects it. Repeated contention can delay onboarding; it does not grant withdrawal rights. This behavior is reproduced in local compiled-program tests.",
+          "EV-02 (medium): public state/RPC endpoints need aggregate shared request limits to reduce service-exhaustion and provider-cost risk. EV-05 (informational): upstream bincode 1.3.3 is flagged as unmaintained."
+        ]
+      },
+      {
+        "title": "Fixes and evidence",
+        "paragraphs": [
+          "EV-03: governor and reviewer preflight now reject actions missing the required terminal multisig account. EV-04: monitoring now verifies deployed program bytes and fails when deployment configuration is missing. The live Devnet monitor passed locally and in GitHub.",
+          "57 unit/integration tests passed after review fixes; 46 existing browser checks passed during review. npm audit reported no known vulnerabilities; RustSec retained the maintenance warning. Tests and scans are bounded evidence, not security guarantees."
+        ]
+      },
+      {
+        "title": "Not completed by this report",
+        "paragraphs": [
+          "Production identity acceptance, the real participant pilot, the DAMM adapter, live fee collection and mainnet trading remain incomplete. Public launches are disabled. The 5% fee split and collection-day allocation are tested models; the historical Rust fixture is not the new trading adapter.",
+          "Two reviewers can collude or approve an upgrade. Reports cannot prove useful work or honest invoices. Each material change requires a new review and regression evidence."
+        ]
+      }
+    ]
+  }
+]
