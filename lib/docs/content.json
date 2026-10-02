@@ -382,6 +382,23 @@
           "Production identity acceptance, the real participant pilot, the DAMM adapter, live fee collection and mainnet trading remain incomplete. Public launches are disabled. The 5% fee split and collection-day allocation are tested models; the historical Rust fixture is not the new trading adapter.",
           "Two reviewers can collude or approve an upgrade. Reports cannot prove useful work or honest invoices. Each material change requires a new review and regression evidence."
         ]
+      },
+      {
+        "title": "Pilot addendum: account decoding",
+        "paragraphs": [
+          "EV-06 (medium, fixed in source f11e0aa): the first real project registration exposed incorrect integer decoding from Node Buffer slices. Normalizing input to Uint8Array fixes the server state failure. An offset-buffer regression test now covers it; all 58 unit/integration tests and the build pass. No onchain upgrade was made.",
+          "The public repository happycamper-stix/evangel-fund is registered on Devnet and remains unadopted. The custody monitor passes. Registration is not identity verification or payout approval."
+        ],
+        "links": [
+          {
+            "href": "https://github.com/happycamper-stix/evangel-fund",
+            "label": "Public project source"
+          },
+          {
+            "href": "/internal-security-review.md",
+            "label": "Full review and pilot addendum"
+          }
+        ]
       }
     ]
   }

@@ -48,3 +48,9 @@ Two reviewers can collude, sign false evidence or authorize a program upgrade. A
 With private source access: `npm ci`, `npm test`, `npm run test:browser`, `npm run build`, `npm run security:dependencies`, `npm run security:rust`. SBF tests require the project's configured Solana toolchain. Run `scripts/solana/monitor.mjs` with the public Devnet program/multisig environment values and `docs/DEVNET_ADDRESSES.json` baseline. No private key is needed for monitoring. Use `npm run solana:inspect-quote` for a fresh read-only quote inspection.
 
 Publish a new dated review after code changes, include exact commits and remediation tests, and retain prior findings until their fixes are verified. A later report must not inherit an approval merely from this test count.
+
+## Pilot addendum — 2 October 2026
+
+EV-06 (medium, fixed in source `f11e0aa`): server RPC account decoding used Node Buffer slices with integer reads that ignored their backing-store offset. Registering the first real Devnet project exposed the issue as an Oversized vector error, making state retrieval unavailable. Reader now normalizes input into Uint8Array; the regression test uses an offset Buffer and verifies signed/unsigned integers. 58 unit/integration tests and the production build pass. The read-only live monitor passes with the registered project. This was a server/client decoder fix, not an onchain upgrade.
+
+The public repository https://github.com/happycamper-stix/evangel-fund now contains source snapshots with provenance in commit messages. The pilot project `7nHAfLoBSaNe8UQJFqCP7np5eRwpVNk1hDBxr8wRPwHT` is registered on Devnet, not adopted. No identity, payout or reviewer acceptance is implied. Finalized registration receipt is in docs/PILOT_REGISTRATION.json.

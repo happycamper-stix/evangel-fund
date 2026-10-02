@@ -1,6 +1,6 @@
 # Real participant Devnet pilot
 
-Status: waiting for a public repository, its consenting owner/maintainer, production Clerk setup and reviewer signatures. Do not make the private Evangel source public to satisfy the public-repository requirement.
+Status: happycamper-stix/evangel-fund is now public and registered on Devnet. See PILOT_REGISTRATION.json. Ownership adoption, production Clerk setup and real reviewer signatures remain pending. The private repository history was not published.
 
 ## Participants and setup
 
