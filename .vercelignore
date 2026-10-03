@@ -33,3 +33,5 @@ playwright.config.mjs
 data
 lib/operator
 /solana
+
+!/docs/DAO_RELEASE_CANDIDATE.json

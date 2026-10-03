@@ -20,6 +20,11 @@ export default function GovernorPage() {
       <section className="ev-card">
         <h2>Holder challenges · candidate rules</h2>
         <p>
+          <a className="ev-link" href="/governor/rehearsal">
+            Verify your reviewer wallet →
+          </a>
+        </p>
+        <p>
           Developers manage ordinary product work. Program upgrades require two
           reviewers to inspect the exact build before a six-hour holder
           challenge window opens.
@@ -45,9 +50,10 @@ export default function GovernorPage() {
           voting token or treasury.
         </p>
         <p>
-          <strong>Not active on Devnet yet.</strong> The voting mint and
-          immutable upgrade guard must be verified before authority migration.
-          Existing custody remains under its current multisig rules.
+          <strong>Not active on Devnet yet.</strong> The compatible candidate is
+          deployed. The voting mint and immutable upgrade guard must be verified
+          before authority migration. Existing custody remains under its current
+          multisig rules.
         </p>
         <a
           className="ev-link"

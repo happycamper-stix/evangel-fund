@@ -14,8 +14,17 @@
     "binaryLength": 152872
   },
   "votingMint": null,
-  "reviewers": null,
+  "reviewers": [
+    "2xfWrsDopF88hje19HnghXCSbqAmQum297L2KGoAMd3h",
+    "5GcGNF4fTJhBiGLCqwXxFTj5tqWUjRAsGAmMvSMJ5sL4",
+    "FqXojD69EQyiT1Vckz3twzMTUXNr4yL3Qe5kcroAV2GM"
+  ],
   "publicActivationAuthorized": false,
   "mintPolicy": "Six decimals, revoked authorities; plain mint or immutable self-referencing MetadataPointer + TokenMetadata only",
-  "devnetProgram": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz"
+  "devnetProgram": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz",
+  "developer": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+  "reviewerConfirmation": {
+    "status": "Public addresses supplied by user; wallet possession and review attestations pending",
+    "independenceVerified": false
+  }
 }

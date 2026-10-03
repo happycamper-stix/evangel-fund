@@ -7,6 +7,7 @@ for (const path of [
   "/fund",
   "/eacc",
   "/governor",
+  "/governor/rehearsal",
   "/setup",
   "/launchpad-setup",
   "/missing-page",
