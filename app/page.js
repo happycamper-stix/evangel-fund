@@ -53,9 +53,9 @@ export default async function HomePage({ searchParams }) {
               <i /> E/ACC × OPEN SOURCE
             </p>
             <h1>
-              Spread
+              Effective
               <br />
-              <span>progress.</span>
+              <span>acceleration.</span>
             </h1>
             <p className="landing-intro">
               A gathering place for people building what’s next.

@@ -872,3 +872,12 @@
   .landing-minimal .signal-art { width: 52%; max-width: 350px; justify-self: center; }
   .landing-minimal h1 { font-size: clamp(72px, 11vw, 110px); letter-spacing: -.065em; }
 }
+
+/* Longer headline, sized to stay within its column at every breakpoint. */
+.landing-minimal h1 { font-size: clamp(44px, 6.15vw, 82px); letter-spacing: -.065em; line-height: .94; }
+@media (min-width: 651px) and (max-width: 1000px) {
+  .landing-minimal h1 { font-size: clamp(52px, 8.5vw, 82px); }
+}
+@media (max-width: 650px) {
+  .landing-minimal h1 { font-size: clamp(30px, 8.6vw, 55px); }
+}
