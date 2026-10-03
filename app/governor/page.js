@@ -1,3 +1,4 @@
+import Upgrade from "@/components/governance/Upgrade";
 import Reviewer from "@/components/governance/Reviewer";
 import GuidePage from "@/components/site/SiteChrome";
 import { inferenceStatus } from "@/lib/governance/inference.mjs";
@@ -16,6 +17,7 @@ export default function GovernorPage() {
       title="Back the work. Check the proof."
       description="Evidence review for community decisions and open-source worker rewards."
     >
+      <Upgrade />
       <Reviewer />
       <section className="ev-card">
         <h2>Review without a platform token</h2>

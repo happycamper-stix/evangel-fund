@@ -31,3 +31,11 @@ Use the public repository and wallet already verified at `https://evangel.fund/v
 ## Latest gate execution
 
 Gate 1 passed: both observed venue executables still match their pinned hashes. Gate 2 preparation is complete: verified buffer, finalized capacity extension, unchanged deployed code and authority, and a successful unsigned Devnet upgrade simulation. The local suite now passes 68 tests, including loader and real-Squads upgrade-path tests. Actual member proposal creation, two approvals, and the onchain delay remain required before continuing to gate 3. Vault funding credited during preparation remains available in the vault; see the public preparation receipt for amounts.
+
+## Signing workflow and operational preparation
+
+The reviewed-upgrade workspace is live at `https://evangel.fund/governor#upgrade`. It verifies finalized code, buffer authority/hash, exact governance, and program capacity before enabling member actions; approval and execution compare the actual stored proposal with the pinned upgrade. All three configured members received 0.02 Devnet SOL for signing costs. No proposal or approval has been supplied on their behalf.
+
+The dedicated keeper signer now has balance limits and a ten-transaction batch limit. Collection and settlement require explicit verified deployment baselines. The cycle runner prevents overlap, stops after failure, and records local health. The pre-upgrade failure drill correctly blocked collection and skipped settlement. An always-on signing service and external alert delivery are still pending; no scheduler is claimed by these local checks.
+
+Current validation: 72 unit/integration tests, 50 browser tests, successful production build, live upgrade endpoint and page checks, and trading still disabled. The baseline-finalization command correctly rejects the undeployed candidate. See READINESS_PROGRESS.json and KEEPER_OPERATIONS.md.

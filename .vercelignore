@@ -16,7 +16,10 @@ test
 tests
 scripts
 contracts
-/docs
+/docs/*
+!/docs/DEVNET_ADDRESSES.json
+!/docs/VENUE_ADAPTER_CANDIDATE.json
+!/docs/DEVNET_UPGRADE_PREPARATION.json
 agents
 *.log
 .next-*

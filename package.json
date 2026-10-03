@@ -8,6 +8,7 @@
     "start": "next start",
     "solana:build": "node scripts/solana/build.mjs",
     "solana:deploy": "node --env-file-if-exists=.env.local scripts/solana/deploy.mjs",
+    "solana:finalize-upgrade": "node --env-file-if-exists=.env.local scripts/solana/finalize-upgrade.mjs",
     "solana:prepare-upgrade": "node scripts/solana/prepare-upgrade.mjs",
     "solana:preflight": "node scripts/solana/preflight.mjs",
     "solana:fixture": "node scripts/solana/fixture.mjs",
@@ -31,6 +32,7 @@
     "solana:build:venue": "node scripts/solana/build.mjs --venue-candidate",
     "test:venue:full": "npm run solana:references && npm run solana:inspect-venue && npm run solana:inspect-venue -- --devnet && npm run solana:build:venue && npm run solana:build:venue:review && npm run test:venue",
     "solana:build:venue:review": "node scripts/solana/build.mjs --venue-adapter",
+    "solana:keeper-cycle": "node --env-file-if-exists=.env.local scripts/solana/keeper-cycle.mjs",
     "solana:collect-fees": "node --env-file-if-exists=.env.local scripts/solana/collect-fees.mjs"
   },
   "dependencies": {

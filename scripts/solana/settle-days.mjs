@@ -1,3 +1,9 @@
+import {
+  verifyKeeperDeployment,
+  keeperSigner,
+  checkKeeperBalance,
+  MAX_KEEPER_TRANSACTIONS,
+} from "./keeper-guard.mjs";
 import { NETWORK } from "./runtime.mjs";
 // Run daily after 00:00 UTC. Permissionless settlement; operator only pays network rent/fees.
 import { getCreateAssociatedTokenIdempotentInstruction } from "@solana-program/token-2022";
@@ -12,7 +18,6 @@ import {
 } from "../../lib/solana/program.mjs";
 import {
   assertDevelopmentCluster,
-  signer,
   signedTransaction,
   save,
   rpc,
@@ -29,6 +34,7 @@ if (!snapshot.factory) {
   );
   process.exit(0);
 }
+await verifyKeeperDeployment(snapshot);
 const slot = await rpc("getSlot", [{ commitment: "finalized" }]);
 const now = await rpc("getBlockTime", [slot]);
 const plan = dailySettlementPlan(snapshot, now);
@@ -40,7 +46,11 @@ console.log(
   }),
 );
 if (!process.argv.includes("--broadcast") || !plan.length) process.exit(0);
-const operator = await signer("operator");
+if (plan.length > MAX_KEEPER_TRANSACTIONS)
+  throw Error(
+    "Settlement batch exceeds the reviewed limit; partition days before enabling this keeper.",
+  );
+const operator = await keeperSigner();
 let failures = 0;
 for (const step of plan) {
   try {
@@ -90,12 +100,15 @@ for (const step of plan) {
         ]),
       );
     }
+    await checkKeeperBalance(operator);
     const tx = await signedTransaction(ix, operator);
     await save(`daily-${tx.signature}.json`, tx);
-    await rpc("sendTransaction", [
+    const returned = await rpc("sendTransaction", [
       tx.wire,
       { encoding: "base64", skipPreflight: false, maxRetries: 3 },
     ]);
+    if (returned !== tx.signature)
+      throw Error("Unexpected transaction signature");
     await finalized(tx.signature);
     console.log(
       JSON.stringify({

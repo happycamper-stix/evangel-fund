@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-10-03T01:57:12.970143+00:00",
+  "deployment": "https://evangel-je6ttnjyy-happycamper-stixs-projects.vercel.app",
+  "publicSigningPage": "https://evangel.fund/governor#upgrade",
+  "upgradeStatus": "ready; no proposal yet",
+  "memberGasFunding": {
+    "signature": "27chbz7cWXPZCYheo1AnGH5b2XnHEa3SG6Kryj8dBBTTV62k1wspaYTg2wAHhzm7rHXHETJXbVyTvDnVzKCkYLE1",
+    "lamportsPerMember": 20000000,
+    "cluster": "devnet"
+  },
+  "tests": {
+    "unitAndIntegration": 72,
+    "browser": 50,
+    "build": "passed"
+  },
+  "liveChecks": {
+    "upgradeEndpoint": 200,
+    "governorPage": 200,
+    "launchEnabled": false
+  },
+  "keeperDryRun": {
+    "startedAt": "2026-10-03T01:53:57.962Z",
+    "broadcast": false,
+    "status": "attention-required",
+    "steps": [
+      {
+        "step": "monitor.mjs",
+        "ok": true,
+        "exitCode": 0
+      },
+      {
+        "step": "collect-fees.mjs",
+        "ok": false,
+        "exitCode": 1
+      }
+    ],
+    "reason": "Keeper step collect-fees.mjs did not pass; later steps were not run.",
+    "finishedAt": "2026-10-03T01:54:01.223Z"
+  },
+  "overlapDrill": {
+    "observedAt": "2026-10-03T01:55:39.224Z",
+    "blockedConcurrentRun": true,
+    "broadcast": false
+  },
+  "baselinePromotionGuard": "refused undeployed upgrade; baseline unchanged",
+  "remaining": "Actual member proposal and two approvals; real 48-hour delay; participant pilot; venue acceptance; scheduled signing service and external alert/recovery acceptance; separately authorized mainnet release."
+}
