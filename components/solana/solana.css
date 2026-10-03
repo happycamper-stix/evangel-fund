@@ -92,3 +92,13 @@
   outline-offset: 2px;
 }
 .sol-action{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:360px;overflow:auto}
+
+.sol-project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 18px; }
+.sol-project.sol-project-card { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 16px; min-height: 250px; padding: 24px; text-align: left; border: 1px solid #45443d; background: #191918; border-radius: 10px; }
+.sol-project-card strong { font-size: 22px; color: #f2efe5; }
+.sol-project-card span { line-height: 1.5; }
+.sol-project-card .project-card-source { font-size: 12px; overflow-wrap: anywhere; }
+.sol-project-card .project-card-action { margin-top: auto; color: #ff9274; }
+.sol-project-card:hover, .sol-project-card[aria-pressed="true"] { border-color: #ff704c; background: #25211d; }
+.project-registration > summary { cursor: pointer; font-weight: 600; }
+.project-registration[open] > summary { margin-bottom: 24px; }

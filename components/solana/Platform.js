@@ -95,11 +95,11 @@ export default function Platform({ mode, config }) {
           </h1>
           <p>
             {mode === "fund"
-              ? "Choose a project to view its funding, milestones, and contributor rewards."
+              ? "Find a project and support its work. No GitHub verification needed."
               : "Browse tokens linked to projects and creators. Public launches and trading are not yet available."}
           </p>
         </header>
-        <BuilderPath active={mode === "fund" ? "/fund" : "/launch"} />
+        {mode !== "fund" && <BuilderPath active="/launch" />}
         {!config.configured && (
           <section className="ev-card">
             <h2>Testnet deployment pending</h2>
@@ -161,18 +161,21 @@ function Content({ data, mode }) {
         {!data.projects.filter((project) => mode === "fund" || !project.tokenless).length ? (
           <p>No projects are available in this view yet.</p>
         ) : (
-          <div className="sol-list">
+          <div className="sol-project-grid">
             {data.projects
               .filter((p) => mode === "fund" || !p.tokenless)
               .map((p) => (
                 <button
                   key={p.address}
-                  className="sol-project"
+                  className="sol-project sol-project-card"
                   aria-pressed={selected === p.address}
                   onClick={() => setSelected(p.address)}
                 >
-                  {p.name} {p.symbol && `· $${p.symbol}`}
-                  <span>{p.adopted ? "Adopted by project owner" : "Awaiting owner adoption"}</span>
+                  <strong>{p.name} {p.symbol && `· $${p.symbol}`}</strong>
+                  <span className="project-card-source">{p.source}</span>
+                  <span>{p.tokenless ? "Support open-source work through project funding and milestones." : "A community token project with funding for ongoing development."}</span>
+                  <span>{data.milestones.filter((m) => m.project === p.address).length} milestones · {p.adopted ? "Owner adopted" : "Community listed"}</span>
+                  <span className="project-card-action">View project & fund →</span>
                 </button>
               ))}
           </div>
@@ -187,7 +190,8 @@ function Content({ data, mode }) {
           enabled={enabled}
         />
       )}
-      <section className="ev-card">
+      <details className="ev-card project-registration" open={mode === "launch"}>
+        <summary>{mode === "fund" ? "List a project / manage a repository" : "Create a community token"}</summary>
         <h2>
           {mode === "fund"
             ? "Add a repository for funding"
@@ -312,7 +316,7 @@ function Content({ data, mode }) {
             Registration does not imply owner endorsement.
           </p>
         </form>
-      </section>
+      </details>
       <details className="workspace-tools">
         <summary>
           Project operations <span>Fees, settlement & governance</span>
