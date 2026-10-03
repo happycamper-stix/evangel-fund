@@ -186,20 +186,73 @@ fn create<'a>(
         )
     }
 }
+// Only immutable, self-contained metadata is permitted; no transfer-affecting extensions.
+#[derive(BorshDeserialize)]
+struct Metadata {
+    authority: [u8; 32],
+    mint: [u8; 32],
+    name: String,
+    symbol: String,
+    uri: String,
+    additional: Vec<(String, String)>,
+}
+fn mint_extensions(d: &[u8], key: &Pubkey) -> ProgramResult {
+    if d.len() == 82 {
+        return Ok(());
+    }
+    check(d.len() > 166 && d[82..165].iter().all(|b| *b == 0) && d[165] == 1)?;
+    let mut rest = &d[166..];
+    let mut seen = 0u8;
+    while !rest.is_empty() {
+        check(rest.len() >= 4)?;
+        let kind = u16::from_le_bytes([rest[0], rest[1]]);
+        let len = u16::from_le_bytes([rest[2], rest[3]]) as usize;
+        rest = &rest[4..];
+        check(len <= rest.len())?;
+        let value = &rest[..len];
+        match kind {
+            18 => {
+                check(
+                    seen & 1 == 0
+                        && len == 64
+                        && value[..32] == [0; 32]
+                        && &value[32..] == key.as_ref(),
+                )?;
+                seen |= 1;
+            }
+            19 => {
+                check(seen & 2 == 0 && len >= 80)?;
+                let m = Metadata::try_from_slice(value)
+                    .map_err(|_| ProgramError::InvalidAccountData)?;
+                check(m.authority == [0; 32] && m.mint == key.to_bytes())?;
+                // Metadata strings have no governance meaning; Borsh validates their complete encoding.
+                let _ = (m.name, m.symbol, m.uri, m.additional);
+                seen |= 2;
+            }
+            _ => return Err(ProgramError::InvalidAccountData),
+        }
+        rest = &rest[len..];
+    }
+    check(seen == 3)
+}
 fn token(a: &AccountInfo, mint: &Pubkey, owner: &Pubkey) -> ProgramResult {
-    check(*a.owner == TOKEN && a.data_len() == 165)?;
+    check(*a.owner == TOKEN && !a.executable && a.data_len() >= 165)?;
     let d = a.try_borrow_data()?;
+    // Token-2022 associated accounts use the zero-length ImmutableOwner extension.
+    check(d.len() == 165 || (d.len() == 170 && d[165..] == [2, 7, 0, 0, 0]))?;
     check(
         &d[..32] == mint.as_ref()
             && &d[32..64] == owner.as_ref()
             && d[108] == 1
             && d[72..76] == [0; 4]
+            && d[109..113] == [0; 4]
             && d[129..133] == [0; 4],
     )
 }
 fn mint(a: &AccountInfo) -> Result<u64, ProgramError> {
-    check(*a.owner == TOKEN && a.data_len() == 82)?;
+    check(*a.owner == TOKEN && !a.executable && a.data_len() >= 82)?;
     let d = a.try_borrow_data()?;
+    mint_extensions(&d, a.key)?;
     check(d[..4] == [0; 4] && d[46..50] == [0; 4] && d[44] == 6 && d[45] == 1)?;
     let n = u64::from_le_bytes(d[36..44].try_into().unwrap());
     check(n > 0)?;

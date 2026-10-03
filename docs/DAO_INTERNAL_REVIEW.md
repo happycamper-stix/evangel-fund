@@ -1,11 +1,11 @@
-# DAO upgrade guard — candidate v2 internal review
+# DAO upgrade guard — candidate v3 internal review
 
-Date: 2026-10-03. This is a first-party engineering review, not independent certification or a claim of exploit immunity. No live guard deployment, authority transfer, or public voting is claimed.
+Date: 2026-10-03. This is a first-party engineering review, not independent certification or a claim of exploit immunity. A separate mutable candidate is deployed and bytecode verified on Devnet (DAO_DEVNET_CANDIDATE.json). No initialization, authority transfer or public voting is claimed.
 
 ## Artifacts
 
-- Production guard: 149312 bytes; SHA-256 `8a788146144f9d6ec4392046ebfe7910231a716d0977a04f5db919afee2f37d6`. Rejects fast-mode initialization.
-- Development-only guard: 149360 bytes; SHA-256 `d12ee50bc69d63f5f6cc05620006bf8ff5dd121514f6acdcb59b3542efed4691`. Fast mode must be explicitly initialized, expires after 14 days, and cannot be reopened.
+- Production guard: 152816 bytes; SHA-256 `9c700378cb2956556b1d1360d078c1c8846cb89167024335b85a6fd427f047a9`. Rejects fast-mode initialization.
+- Development-only guard: 152872 bytes; SHA-256 `e177cb113330814324a5d0af6dad64c4a1a803f5972cb21f894cbb6d6f0a1ad6`. Fast mode must be explicitly initialized, expires after 14 days, and cannot be reopened.
 - Machine-readable record: DAO_RELEASE_CANDIDATE.json. Candidate addresses, mint and reviewers are not invented or populated.
 
 ## Resolved findings
@@ -29,10 +29,18 @@ Date: 2026-10-03. This is a first-party engineering review, not independent cert
 
 ## Limits still requiring inspection
 
-- Voting mint, reviewer identities/conflicts, and actual mint compatibility are not selected. The current guard accepts only extension-free six-decimal Token-2022 with revoked mint/freeze authority. Unsupported mints fail closed.
+- Voting mint, reviewer identities/conflicts, and actual mint compatibility are not selected. The guard accepts plain six-decimal Token-2022 or immutable self-contained MetadataPointer + TokenMetadata with revoked mint/freeze authorities. The live e/acc mint passes raw inspection. Plain and ImmutableOwner token accounts pass; unknown extensions fail closed.
 - Higher quorum can cause governance deadlock when participation is low. Holders with more than the original founder allocation can still dominate. Key recovery requires enough eligible participation; it does not recover a community with no available quorum.
 - The program cannot cryptographically identify Devnet. Development artifact selection must be prevented at public release using a pinned production hash and authority inspection; never advertise development bytes as network-restricted onchain.
 - An approved target upgrade can change target-program policies. Review/vote enforcement does not prove new code correctness or make all factory caps permanently immutable.
 - Configuration ABI changed from v1, which was never deployed. No funded v1-account migration is provided.
 - Existing custody remains Squads-controlled and its 48-hour delay remains in force. Old signing/preparation remains blocked; a website block does not revoke signers' onchain authority.
 - Live holder signing UI, real Devnet rehearsal, final artifact inspection, authorized migration, operating-service and venue acceptance remain separate activation gates. Direct-wallet donations are not part of this guard release.
+
+## v3 e/acc compatibility review
+
+The parser accepts exactly extension IDs 18/19, each once, with zero update authorities and both addresses bound to the mint. Complete metadata Borsh decoding prevents trailing or malformed contents. No metadata content is treated as governance instruction. Token account extension ID 7 is the only accepted account extension. Transfer fees, hooks, delegates, native accounts and close authorities are rejected. The existing 165-byte escrow remains valid for metadata-only mints; compiled Token-2022 CPI tests verify both deposit and withdrawal from 170-byte ImmutableOwner accounts using the real e/acc mint layout.
+
+21 DAO tests pass including raw snapshot validation, every extended-layout truncation, mutable/foreign/duplicate/unknown metadata and unsafe token account rejection. The real mint exists on mainnet; development-network tests use isolated accounts and do not claim a mainnet governance deployment.
+
+Reference: https://solana.com/docs/tokens/extensions/metadata and the installed @solana-program/token-2022 generated extension discriminators (18 MetadataPointer, 19 TokenMetadata, 7 ImmutableOwner).

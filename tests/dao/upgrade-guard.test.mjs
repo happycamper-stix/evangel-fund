@@ -1,3 +1,4 @@
+import { holderInstruction } from "../../lib/solana/dao-holder.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -47,7 +48,10 @@ async function setup(options = {}) {
     svm.airdrop(s.address, 100_000_000_000n);
   const program = await key(),
     target = await key(),
-    mint = await key();
+    mint = options.metadata
+      ? (await import("./eacc-mint-fixture.json", { with: { type: "json" } }))
+          .default.mint
+      : await key();
   const code = await readFile(".evangel/test-programs/evangel_factory.so");
   svm.addProgram(target, code);
   svm.addProgram(
@@ -73,7 +77,13 @@ async function setup(options = {}) {
     svm.airdrop(address, 10_000_000_000n);
     svm.setAccount({ ...svm.getAccount(address), programAddress: owner, data });
   }
-  const md = Buffer.alloc(82);
+  const md = options.metadata
+    ? Buffer.from(
+        (await import("./eacc-mint-fixture.json", { with: { type: "json" } }))
+          .default.account.data[0],
+        "base64",
+      )
+    : Buffer.alloc(82);
   md.writeBigUInt64LE(SUPPLY, 36);
   md[44] = 6;
   md[45] = 1;
@@ -85,6 +95,7 @@ async function setup(options = {}) {
     md.writeUInt32LE(1, 46);
     md.set(pub(admin.address), 50);
   }
+  if (options.mutateMint) options.mutateMint(md);
   raw(mint, TOKEN, md);
   const config = await daoAddress(program, target),
     vault = await daoAuthority(program, config);
@@ -151,21 +162,26 @@ async function setup(options = {}) {
     const source = await key(),
       stake = await daoStake(program, config, who.address),
       escrow = await daoEscrow(program, config, who.address);
-    const td = Buffer.alloc(165);
+    const td = Buffer.alloc(options.metadata ? 170 : 165);
+    if (options.metadata) td.set([2, 7, 0, 0, 0], 165);
     td.set(pub(mint));
     td.set(pub(who.address), 32);
     td.writeBigUInt64LE(amount, 64);
     td[108] = 1;
+    if (options.mutateToken) options.mutateToken(td);
     raw(source, TOKEN, td);
-    const accounts = [
-      rw(stake),
-      rw(escrow),
-      rw(source),
-      ro(mint),
-      ro(TOKEN),
-      ro(SYSTEM),
-    ];
-    await send(ix("deposit", { amount }, accounts, who), who);
+    await send(
+      await holderInstruction({
+        program,
+        target,
+        mint,
+        signer: who,
+        action: "deposit",
+        tokenAccount: source,
+        amount,
+      }),
+      who,
+    );
     const withdraw = () =>
       ix(
         "withdraw",
@@ -204,9 +220,16 @@ async function setup(options = {}) {
     return p;
   }
   async function ballot(p, s, name, args = {}, fail = false) {
-    const b = await daoBallot(program, p.proposal, s.who.address);
     return send(
-      ix(name, args, [rw(p.proposal), rw(s.stake), rw(b), ro(SYSTEM)], s.who),
+      await holderInstruction({
+        program,
+        target,
+        mint,
+        signer: s.who,
+        action: name,
+        proposal: p.proposal,
+        ...args,
+      }),
       s.who,
       fail,
     );
@@ -547,4 +570,60 @@ test("outsider cannot close development early; recovery rejects invalid keys and
     p.dev,
     true,
   );
+});
+
+test("immutable e/acc metadata and ImmutableOwner accounts support actual deposits and withdrawals", async () => {
+  const f = await setup({ metadata: true });
+  const s = await f.deposit();
+  await f.send(s.withdraw(), s.who);
+  assert.equal(f.state(s.stake).amount, "0");
+});
+test("metadata guard rejects mutable pointers, foreign metadata, unknown and duplicate extensions", async () => {
+  for (const mutateMint of [
+    (d) => {
+      d[170] = 1;
+    },
+    (d) => {
+      d[202] ^= 1;
+    },
+    (d) => {
+      d[166] = 1;
+    },
+    (d) => {
+      d[234] = 18;
+    },
+    (d) => {
+      d[238] = 1;
+    },
+    (d) => {
+      d[270] ^= 1;
+    },
+    (d) => {
+      d[168] = 255;
+    },
+    (d) => {
+      d[165] = 2;
+    },
+  ])
+    await setup({ metadata: true, mutateMint, invalid: true });
+});
+
+test("token account extensions cannot smuggle transfer hooks or delegated custody", async () => {
+  for (const mutateToken of [
+    (d) => {
+      d[166] = 15;
+    },
+    (d) => {
+      d[72] = 1;
+    },
+    (d) => {
+      d[109] = 1;
+    },
+    (d) => {
+      d[129] = 1;
+    },
+  ]) {
+    const f = await setup({ metadata: true, mutateToken });
+    await assert.rejects(f.deposit());
+  }
 });

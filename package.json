@@ -36,7 +36,9 @@
     "solana:collect-fees": "node --env-file-if-exists=.env.local scripts/solana/collect-fees.mjs",
     "dao:build": "node scripts/solana/build-dao.mjs",
     "test:dao": "npm run dao:build && node scripts/solana/build-dao.mjs --devnet-bootstrap && node --test tests/dao/*.test.mjs",
-    "test:dao:rules": "PATH=\"$HOME/.cargo/bin:$PATH\" cargo test --manifest-path solana/dao/Cargo.toml"
+    "test:dao:rules": "PATH=\"$HOME/.cargo/bin:$PATH\" cargo test --manifest-path solana/dao/Cargo.toml",
+    "dao:inspect-mint": "node scripts/solana/inspect-dao-mint.mjs",
+    "dao:inspect-release": "node scripts/solana/inspect-dao-release.mjs"
   },
   "dependencies": {
     "@clerk/backend": "^3.21.1",

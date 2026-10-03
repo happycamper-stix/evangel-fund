@@ -1,19 +1,21 @@
 {
-  "version": 2,
-  "status": "local candidate; not deployed",
+  "version": 3,
+  "status": "Devnet candidate deployed and bytecode verified; not initialized or activated",
   "production": {
-    "status": "local candidate only",
+    "status": "deployed mutable Devnet candidate",
     "developmentOnly": false,
-    "binarySha256": "8a788146144f9d6ec4392046ebfe7910231a716d0977a04f5db919afee2f37d6",
-    "binaryLength": 149312
+    "binarySha256": "9c700378cb2956556b1d1360d078c1c8846cb89167024335b85a6fd427f047a9",
+    "binaryLength": 152816
   },
   "development": {
     "status": "local candidate only",
     "developmentOnly": true,
-    "binarySha256": "d12ee50bc69d63f5f6cc05620006bf8ff5dd121514f6acdcb59b3542efed4691",
-    "binaryLength": 149360
+    "binarySha256": "e177cb113330814324a5d0af6dad64c4a1a803f5972cb21f894cbb6d6f0a1ad6",
+    "binaryLength": 152872
   },
   "votingMint": null,
   "reviewers": null,
-  "publicActivationAuthorized": false
+  "publicActivationAuthorized": false,
+  "mintPolicy": "Six decimals, revoked authorities; plain mint or immutable self-referencing MetadataPointer + TokenMetadata only",
+  "devnetProgram": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz"
 }

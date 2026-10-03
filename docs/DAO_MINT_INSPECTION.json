@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-10-03T08:05:37.616Z",
+  "cluster": "mainnet-beta",
+  "mint": "CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU",
+  "slot": 452874376,
+  "compatible": true,
+  "reasons": [],
+  "byteLength": 389,
+  "decimals": 6,
+  "supply": "983387702383353"
+}

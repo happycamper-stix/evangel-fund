@@ -1,6 +1,6 @@
 # Holder challenge governance — candidate v2
 
-Status: locally implemented and tested; not deployed or activated. The factory still uses the existing Squads authority and recorded 48-hour delay. The old staged upgrade is superseded; its website signing and preparation paths remain blocked. No authority is transferred by publishing these rules.
+Status: e/acc-compatible candidate deployed and bytecode verified on Devnet; mutable, uninitialized and not activated. See DAO_DEVNET_CANDIDATE.json. The factory still uses the existing Squads authority and recorded 48-hour delay. The old staged upgrade is superseded; its website signing and preparation paths remain blocked. No authority is transferred by publishing these rules.
 
 ## Decisions and scope
 
@@ -29,7 +29,7 @@ No public launch may use the development artifact. `assertDaoPublicRelease` chec
 7. Unchallenged upgrades can finalize after six hours. Challenged upgrades cannot finalize before the full vote ends.
 8. Execution is permissionless after approval, but expires seven days after the potential vote end. It rechecks exact buffer, target, code hash, base executable, treasury, generation and phase. A successful upgrade invalidates sibling proposals prepared for the old generation. Replay and stale fast approvals fail.
 
-On a 21M mint, challenge support is 210,000 tokens and quorum is 6.3M. The original maximum 20% founder allocation (4.2M) cannot satisfy quorum alone. This does **not** solve concentration in general: whales can buy additional tokens or coordinate, and key ownership cannot prove independence. Raising quorum reduces unilateral control but increases the chance low participation blocks upgrades. Publish concentration and participation analysis before activation.
+On a 21M mint, challenge support is 210,000 tokens and quorum is 6.3M. These example counts do not apply to the existing e/acc mint: its initialization supply must be measured and used as the denominator. The original maximum 20% founder allocation (4.2M) cannot satisfy quorum alone. This does **not** solve concentration in general: whales can buy additional tokens or coordinate, and key ownership cannot prove independence. Raising quorum reduces unilateral control but increases the chance low participation blocks upgrades. Publish concentration and participation analysis before activation.
 
 ## Voting custody
 
@@ -37,7 +37,7 @@ One base unit of escrowed tokens equals one voting unit. Tokens must be deposite
 
 An active deposit cannot be topped up. Withdraw and redeposit to change its amount; maturity restarts. Per-proposal ballot PDAs prevent duplicate votes. Participants remain locked until six hours plus 72 hours after opening, even if a proposal is unchallenged or canceled. Unlock does not depend on operator finalization. Recovery proposers are also locked through that vote.
 
-Voting mint support is currently limited to six-decimal, extension-free Token-2022 with revoked mint and freeze authorities. Unknown/metadata extensions remain unsupported and fail closed; no real mint has been presumed compatible. The initialization supply is the fixed quorum denominator, so burns do not reduce thresholds.
+Voting mint support requires six-decimal Token-2022 with revoked mint and freeze authorities. Plain mints and the exact immutable, self-referencing MetadataPointer + TokenMetadata pair are accepted. Unknown, duplicate, truncated, mutable, externally referenced or transfer-affecting extensions fail closed. Token accounts may be plain or contain only ImmutableOwner; delegate, native and close authorities are rejected. The live e/acc mint passes this policy; see DAO_MINT_INSPECTION.json. The initialization supply is the fixed quorum denominator, so burns do not reduce thresholds.
 
 ## Key loss and recovery
 

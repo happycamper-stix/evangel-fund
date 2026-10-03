@@ -1,0 +1,14 @@
+{
+  "program": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz",
+  "cluster": "devnet",
+  "slot": 506930049,
+  "status": "production guard rejected development initialization",
+  "error": {
+    "InstructionError": [
+      0,
+      "InvalidArgument"
+    ]
+  },
+  "unitsConsumed": 990,
+  "limitation": "Read-only simulation; not initialization, authority migration or full participant rehearsal"
+}
