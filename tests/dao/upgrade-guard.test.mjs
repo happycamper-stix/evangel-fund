@@ -22,7 +22,8 @@ import {
   decodeDao,
 } from "../../lib/solana/dao.mjs";
 import { TOKEN, LOADER, SYSTEM, pub, pda } from "../../lib/solana/program.mjs";
-const DAY = 86400n,
+const CHALLENGE = 21600n,
+  DAY = 86400n,
   SUPPLY = 21_000_000_000_000n;
 const key = async () => (await generateKeyPairSigner()).address;
 const ro = (address) => ({ address, role: 0 }),
@@ -51,7 +52,11 @@ async function setup(options = {}) {
   svm.addProgram(target, code);
   svm.addProgram(
     program,
-    await readFile(".evangel/dao-programs/evangel_dao.so"),
+    await readFile(
+      options.developmentBuild
+        ? ".evangel/dao-development/evangel_dao.so"
+        : ".evangel/dao-programs/evangel_dao.so",
+    ),
   );
   const pd = await pda(LOADER, pub(target)),
     guardData = await pda(LOADER, pub(program));
@@ -125,6 +130,7 @@ async function setup(options = {}) {
         developer: developer.address,
         reviewers: reviewers.map((x) => x.address),
         treasury: admin.address,
+        development: !!options.development,
       },
       [ro(target), ro(pd), ro(mint), ro(SYSTEM), ro(guardData)],
       admin,
@@ -141,7 +147,7 @@ async function setup(options = {}) {
   function state(address) {
     return decodeDao(svm.getAccount(address).data);
   }
-  async function deposit(amount = SUPPLY / 10n, who = voter) {
+  async function deposit(amount = (SUPPLY * 3n) / 10n, who = voter) {
     const source = await key(),
       stake = await daoStake(program, config, who.address),
       escrow = await daoEscrow(program, config, who.address);
@@ -248,7 +254,7 @@ async function setup(options = {}) {
     raw,
   };
 }
-test("review gate, 24h exact boundary, actual loader upgrade and replay rejection", async () => {
+test("review gate, 6h exact boundary, actual loader upgrade and replay rejection", async () => {
   const f = await setup(),
     p = await f.propose();
   await f.send(
@@ -270,7 +276,7 @@ test("review gate, 24h exact boundary, actual loader upgrade and replay rejectio
   );
   await f.attest(p, f.reviewers[1]);
   assert.equal(f.state(p.proposal).status, 1);
-  f.advance(DAY - 1n);
+  f.advance(CHALLENGE - 1n);
   await f.send(f.ix("finalize", {}, [rw(p.proposal)]), f.developer, true);
   f.advance(1n);
   await f.finalize(p);
@@ -291,7 +297,7 @@ test("escrow maturity, duplicate challenges, locked withdrawal and no-quorum rej
   await f.ballot(p, s, "challenge", { evidence: "22".repeat(32) });
   await f.ballot(p, s, "challenge", { evidence: "22".repeat(32) }, true);
   await f.send(s.withdraw(), s.who, true);
-  f.advance(DAY);
+  f.advance(CHALLENGE);
   await f.send(f.ix("finalize", {}, [rw(p.proposal)]), f.developer, true);
   await f.ballot(p, s, "vote", { approve: false });
   await f.ballot(p, s, "vote", { approve: true }, true);
@@ -308,7 +314,7 @@ test("challenged upgrade requires affirmative quorum; wrong buffer and code are 
   f.advance(7n * DAY);
   const p = await f.reviewed();
   await f.ballot(p, s, "challenge", { evidence: "33".repeat(32) });
-  f.advance(DAY);
+  f.advance(CHALLENGE);
   await f.ballot(p, s, "vote", { approve: true });
   f.advance(3n * DAY);
   await f.finalize(p);
@@ -338,7 +344,7 @@ test("cannot vote with another wallet stake or a canceled proposal; expiry preve
   await f.send(f.ix("cancel", {}, [rw(p.proposal)]));
   await f.ballot(p, s, "challenge", { evidence: "33".repeat(32) }, true);
   const q = await f.reviewed();
-  f.advance(DAY);
+  f.advance(CHALLENGE);
   await f.finalize(q);
   f.advance(10n * DAY);
   await f.send(f.execute(q), f.developer, true);
@@ -352,7 +358,7 @@ test("executing one proposal invalidates all sibling proposals from the old gene
   const f = await setup(),
     p = await f.reviewed(),
     q = await f.reviewed();
-  f.advance(DAY);
+  f.advance(CHALLENGE);
   await f.finalize(p);
   await f.finalize(q);
   f.authority(f.pd, f.vault);
@@ -363,7 +369,7 @@ test("executing one proposal invalidates all sibling proposals from the old gene
 test("a changed base executable prevents an otherwise approved upgrade", async () => {
   const f = await setup(),
     p = await f.reviewed();
-  f.advance(DAY);
+  f.advance(CHALLENGE);
   await f.finalize(p);
   f.authority(f.pd, f.vault);
   const a = f.svm.getAccount(f.pd),
@@ -371,4 +377,174 @@ test("a changed base executable prevents an otherwise approved upgrade", async (
   data[data.length - 1] ^= 1;
   f.svm.setAccount({ ...a, data });
   await f.send(f.execute(p), f.developer, true);
+});
+
+test("production guard rejects fast mode; development build requires two inspections and permanently closes it", async () => {
+  await setup({ development: true, invalid: true });
+  const f = await setup({ development: true, developmentBuild: true });
+  const p = await f.propose();
+  await f.attest(p, f.reviewers[0]);
+  f.authority(f.pd, f.vault);
+  await f.send(f.execute(p), f.developer, true);
+  await f.attest(p, f.reviewers[1]);
+  assert.equal(f.state(p.proposal).status, 2);
+  f.advance(1n);
+  await f.send(f.execute(p));
+  const stale = await f.reviewed();
+  await f.send(f.ix("activatePublic", {}));
+  assert.equal(f.state(f.config).developmentUntil, "0");
+  await f.send(f.execute(stale), f.developer, true);
+  await f.send(f.ix("activatePublic", {}), f.developer, true);
+  const q = await f.reviewed();
+  assert.equal(f.state(q.proposal).status, 1);
+  await f.send(f.ix("finalize", {}, [rw(q.proposal)]), f.developer, true);
+  f.advance(CHALLENGE);
+  await f.finalize(q);
+});
+test("fast mode expires after fourteen days and cannot execute a previously fast-approved proposal", async () => {
+  const f = await setup({ development: true, developmentBuild: true });
+  f.advance(13n * DAY);
+  const p = await f.reviewed();
+  f.advance(DAY);
+  await f.send(f.execute(p), f.developer, true);
+  const q = await f.reviewed();
+  assert.equal(f.state(q.proposal).status, 1);
+});
+test("twenty percent founder-sized position cannot alone pass a contested upgrade", async () => {
+  const f = await setup(),
+    s = await f.deposit(SUPPLY / 5n);
+  f.advance(7n * DAY);
+  const p = await f.reviewed();
+  await f.ballot(p, s, "challenge", { evidence: "44".repeat(32) });
+  f.advance(CHALLENGE);
+  await f.ballot(p, s, "vote", { approve: true });
+  f.advance(3n * DAY);
+  await f.finalize(p);
+  assert.equal(f.state(p.proposal).status, 3);
+});
+async function recover(f, s, proposer = s.who) {
+  const dev = await generateKeyPairSigner(),
+    reviewers = await Promise.all([
+      generateKeyPairSigner(),
+      generateKeyPairSigner(),
+      generateKeyPairSigner(),
+    ]);
+  reviewers.sort((a, b) =>
+    Buffer.compare(Buffer.from(pub(a.address)), Buffer.from(pub(b.address))),
+  );
+  for (const signer of [dev, ...reviewers])
+    f.svm.airdrop(signer.address, 1000000000n);
+  const proposal = await daoProposal(
+    f.program,
+    f.config,
+    BigInt(f.state(f.config).nonce),
+  );
+  await f.send(
+    f.ix(
+      "proposeRecovery",
+      {
+        developer: dev.address,
+        reviewers: reviewers.map((k) => k.address),
+        review: "55".repeat(32),
+        uri: "https://example.org/recovery",
+      },
+      [rw(proposal), ro(SYSTEM), rw(s.stake)],
+      proposer,
+    ),
+    proposer,
+  );
+  return { proposal, dev, reviewers };
+}
+test("holders recover lost developer/reviewers only with mandatory vote and possession of every replacement key", async () => {
+  const f = await setup(),
+    s = await f.deposit();
+  f.advance(7n * DAY);
+  const p = await recover(f, s);
+  await f.send(f.ix("cancel", {}, [rw(p.proposal)]), f.developer, true);
+  f.advance(CHALLENGE);
+  await f.send(f.ix("finalize", {}, [rw(p.proposal)]), f.developer, true);
+  await f.ballot(p, s, "vote", { approve: true });
+  f.advance(3n * DAY);
+  await f.finalize(p);
+  await f.send(
+    f.ix("executeRecovery", {}, [rw(p.proposal)]),
+    f.developer,
+    true,
+  );
+  for (const signer of [p.dev, ...p.reviewers])
+    await f.send(f.ix("acceptRecovery", {}, [rw(p.proposal)], signer), signer);
+  const before = f.state(f.config);
+  await f.send(f.ix("executeRecovery", {}, [rw(p.proposal)]));
+  const after = f.state(f.config);
+  assert.equal(after.developer, p.dev.address);
+  assert.deepEqual(
+    after.reviewers,
+    p.reviewers.map((k) => k.address),
+  );
+  for (const field of [
+    "mint",
+    "supply",
+    "treasury",
+    "target",
+    "developmentUntil",
+  ])
+    assert.equal(after[field], before[field]);
+  await f.send(
+    f.ix("executeRecovery", {}, [rw(p.proposal)]),
+    f.developer,
+    true,
+  );
+});
+test("development key recovery requires old reviewer quorum and new-key acceptance", async () => {
+  const f = await setup({ development: true, developmentBuild: true });
+  const p = await recover(f, { who: f.reviewers[0], stake: SYSTEM });
+  for (const signer of [p.dev, ...p.reviewers])
+    await f.send(f.ix("acceptRecovery", {}, [rw(p.proposal)], signer), signer);
+  await f.send(
+    f.ix("executeRecovery", {}, [rw(p.proposal)]),
+    f.developer,
+    true,
+  );
+  await f.attest(p, f.reviewers[0]);
+  await f.attest(p, f.reviewers[1]);
+  await f.send(f.ix("executeRecovery", {}, [rw(p.proposal)]));
+  assert.equal(f.state(f.config).developer, p.dev.address);
+});
+
+test("outsider cannot close development early; recovery rejects invalid keys and stale reviewer approvals", async () => {
+  const f = await setup({ development: true, developmentBuild: true });
+  await f.send(f.ix("activatePublic", {}, [], f.outsider), f.outsider, true);
+  const old = await f.propose();
+  await f.attest(old, f.reviewers[0]);
+  const p = await recover(f, { who: f.reviewers[0], stake: SYSTEM });
+  for (const signer of [p.dev, ...p.reviewers])
+    await f.send(f.ix("acceptRecovery", {}, [rw(p.proposal)], signer), signer);
+  await f.attest(p, f.reviewers[0]);
+  await f.attest(p, f.reviewers[1]);
+  await f.send(f.ix("executeRecovery", {}, [rw(p.proposal)]));
+  await f.send(
+    f.ix("attest", {}, [rw(old.proposal)], f.reviewers[1]),
+    f.reviewers[1],
+    true,
+  );
+  const next = await daoProposal(
+    f.program,
+    f.config,
+    BigInt(f.state(f.config).nonce),
+  );
+  await f.send(
+    f.ix(
+      "proposeRecovery",
+      {
+        developer: p.dev.address,
+        reviewers: [p.dev.address, p.dev.address, p.dev.address],
+        review: "66".repeat(32),
+        uri: "https://example.org/invalid",
+      },
+      [rw(next), ro(SYSTEM)],
+      p.dev,
+    ),
+    p.dev,
+    true,
+  );
 });

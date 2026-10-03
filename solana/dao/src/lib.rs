@@ -17,6 +17,8 @@ use solana_system_interface::{instruction as system_instruction, program as syst
 const TOKEN: Pubkey = solana_program::pubkey!("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
 const LOADER: Pubkey = solana_program::pubkey!("BPFLoaderUpgradeab1e11111111111111111111111");
 const DAY: i64 = 86400;
+const CHALLENGE: i64 = 6 * 3600;
+const DEVELOPMENT_LIMIT: i64 = 14 * DAY;
 const MATURITY: i64 = 7 * DAY;
 const VOTE: i64 = 3 * DAY;
 const EXECUTION: i64 = 7 * DAY;
@@ -31,6 +33,7 @@ pub struct Config {
     pub treasury: Pubkey,
     pub nonce: u64,
     pub generation: u64,
+    pub development_until: i64,
 }
 #[derive(BorshSerialize, BorshDeserialize, Clone)]
 pub struct Stake {
@@ -59,6 +62,11 @@ pub struct Proposal {
     pub yes: u64,
     pub no: u64,
     pub status: u8,
+    pub development: bool,
+    pub kind: u8,
+    pub next_developer: Pubkey,
+    pub next_reviewers: [Pubkey; 3],
+    pub acceptances: u8,
 }
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct Ballot {
@@ -76,6 +84,7 @@ pub enum Action {
         developer: Pubkey,
         reviewers: [Pubkey; 3],
         treasury: Pubkey,
+        development: bool,
     },
     Deposit {
         amount: u64,
@@ -96,6 +105,15 @@ pub enum Action {
     Finalize,
     Cancel,
     Execute,
+    ActivatePublic,
+    ProposeRecovery {
+        developer: Pubkey,
+        reviewers: [Pubkey; 3],
+        review: [u8; 32],
+        uri: String,
+    },
+    AcceptRecovery,
+    ExecuteRecovery,
 }
 fn check(v: bool) -> ProgramResult {
     if v {
@@ -253,15 +271,31 @@ fn stake(
 fn percent(n: u64, supply: u64, bps: u64) -> bool {
     (n as u128) * 10000 >= (supply as u128) * (bps as u128)
 }
+fn development(c: &Config, now: i64) -> bool {
+    c.development_until > now
+}
+fn fresh(p: &Proposal, c: &Config, now: i64) -> ProgramResult {
+    check(p.generation == c.generation && p.development == development(c, now))
+}
+fn valid_keys(developer: &Pubkey, reviewers: &[Pubkey; 3]) -> ProgramResult {
+    check(
+        *developer != Pubkey::default()
+            && reviewers[0] < reviewers[1]
+            && reviewers[1] < reviewers[2]
+            && !reviewers.contains(developer)
+            && !reviewers.contains(&Pubkey::default()),
+    )
+}
 pub fn outcome(p: &Proposal, c: &Config, now: i64) -> Result<u8, ProgramError> {
-    check(p.status == 1 && now >= add(p.opened, DAY)?)?;
-    if !percent(p.challenges, c.supply, 100) {
+    fresh(p, c, now)?;
+    check(p.status == 1 && now >= add(p.opened, CHALLENGE)?)?;
+    if p.kind == 0 && !percent(p.challenges, c.supply, 100) {
         return Ok(2);
     }
-    check(now >= add(p.opened, DAY + VOTE)?)?;
+    check(now >= add(p.opened, CHALLENGE + VOTE)?)?;
     // An escalated change needs affirmative quorum and a strict majority. Ties/abstention fail closed.
     Ok(
-        if percent(sum(p.yes, p.no)?, c.supply, 1000) && p.yes > p.no {
+        if percent(sum(p.yes, p.no)?, c.supply, 3000) && (p.yes as u128) > 2 * (p.no as u128) {
             2
         } else {
             3
@@ -280,8 +314,10 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
         developer,
         reviewers,
         treasury,
+        development: start_development,
     } = action
     {
+        check(!start_development || cfg!(feature = "devnet-bootstrap"))?;
         let target = next_account_info(it)?;
         let pd = next_account_info(it)?;
         let ma = next_account_info(it)?;
@@ -340,6 +376,11 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 treasury,
                 nonce: 0,
                 generation: 0,
+                development_until: if start_development {
+                    add(now, DEVELOPMENT_LIMIT)?
+                } else {
+                    0
+                },
             },
         );
     }
@@ -458,7 +499,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 pa,
                 sys,
                 pid,
-                640,
+                832,
                 &[
                     b"proposal",
                     ca.key.as_ref(),
@@ -485,6 +526,11 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                     yes: 0,
                     no: 0,
                     status: 0,
+                    development: development(&c, now),
+                    kind: 0,
+                    next_developer: Pubkey::default(),
+                    next_reviewers: [Pubkey::default(); 3],
+                    acceptances: 0,
                 },
             )?;
             c.nonce = sum(c.nonce, 1)?;
@@ -493,6 +539,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
         Action::Attest => {
             let pa = next_account_info(it)?;
             let mut p = proposal(pa, pid, ca.key)?;
+            fresh(&p, &c, now)?;
             check(p.status == 0 && now < add(p.created, 7 * DAY)?)?;
             let index = c
                 .reviewers
@@ -502,7 +549,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             check(p.approvals & (1 << index) == 0)?;
             p.approvals |= 1 << index;
             if p.approvals.count_ones() >= 2 {
-                p.status = 1;
+                p.status = if p.development { 2 } else { 1 };
                 p.opened = now;
             }
             save(pa, &p)
@@ -514,6 +561,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             let sys = next_account_info(it)?;
             let mut p = proposal(pa, pid, ca.key)?;
             let mut s = stake(sa, pid, ca.key, who.key)?;
+            fresh(&p, &c, now)?;
             check(p.status == 1 && s.amount > 0 && add(s.deposited, MATURITY)? <= p.created)?;
             let bump = pda(pid, ballot, &[b"ballot", pa.key.as_ref(), who.key.as_ref()])?;
             let mut b = if ballot.data_is_empty() {
@@ -540,7 +588,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             match action {
                 Action::Challenge { evidence } => {
                     nonzero(&evidence)?;
-                    check(now < add(p.opened, DAY)? && !b.challenged)?;
+                    check(now < add(p.opened, CHALLENGE)? && !b.challenged)?;
                     p.challenges = sum(p.challenges, s.amount)?;
                     check(p.challenges <= c.supply)?;
                     b.challenged = true;
@@ -549,9 +597,9 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 }
                 Action::Vote { approve } => {
                     check(
-                        percent(p.challenges, c.supply, 100)
-                            && now >= add(p.opened, DAY)?
-                            && now < add(p.opened, DAY + VOTE)?
+                        (p.kind == 1 || percent(p.challenges, c.supply, 100))
+                            && now >= add(p.opened, CHALLENGE)?
+                            && now < add(p.opened, CHALLENGE + VOTE)?
                             && !b.voted,
                     )?;
                     if approve {
@@ -564,7 +612,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 }
                 _ => unreachable!(),
             }
-            s.locked_until = s.locked_until.max(add(p.opened, DAY + VOTE)?);
+            s.locked_until = s.locked_until.max(add(p.opened, CHALLENGE + VOTE)?);
             save(sa, &s)?;
             save(ballot, &b)?;
             save(pa, &p)
@@ -579,14 +627,17 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             check(*who.key == c.developer)?;
             let pa = next_account_info(it)?;
             let mut p = proposal(pa, pid, ca.key)?;
-            check(p.status <= 2)?;
+            check(p.status <= 2 && p.kind == 0)?;
             p.status = 5;
             save(pa, &p)
         }
         Action::Execute => {
             let pa = next_account_info(it)?;
             let mut p = proposal(pa, pid, ca.key)?;
-            check(p.status == 2 && now < add(p.opened, DAY + VOTE + EXECUTION)?)?;
+            fresh(&p, &c, now)?;
+            check(
+                p.kind == 0 && p.status == 2 && now < add(p.opened, CHALLENGE + VOTE + EXECUTION)?,
+            )?;
             let target = next_account_info(it)?;
             let pd = next_account_info(it)?;
             let ba = next_account_info(it)?;
@@ -640,6 +691,121 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 &[&[b"authority", ca.key.as_ref(), &[bump]]],
             )
         }
+        Action::ActivatePublic => {
+            check(
+                c.development_until != 0 && (*who.key == c.developer || now >= c.development_until),
+            )?;
+            c.development_until = 0;
+            c.generation = sum(c.generation, 1)?;
+            save(ca, &c)
+        }
+        Action::ProposeRecovery {
+            developer,
+            reviewers,
+            review,
+            uri,
+        } => {
+            valid_keys(&developer, &reviewers)?;
+            nonzero(&review)?;
+            check(uri.starts_with("https://") && uri.len() <= 200)?;
+            let pa = next_account_info(it)?;
+            let sys = next_account_info(it)?;
+            let dev = development(&c, now);
+            if dev {
+                check(*who.key == c.developer || c.reviewers.contains(who.key))?;
+            } else {
+                let sa = next_account_info(it)?;
+                let mut s = stake(sa, pid, ca.key, who.key)?;
+                check(percent(s.amount, c.supply, 100) && add(s.deposited, MATURITY)? <= now)?;
+                s.locked_until = s.locked_until.max(add(now, CHALLENGE + VOTE)?);
+                save(sa, &s)?;
+            }
+            let bump = pda(
+                pid,
+                pa,
+                &[b"proposal", ca.key.as_ref(), &c.nonce.to_le_bytes()],
+            )?;
+            create(
+                who,
+                pa,
+                sys,
+                pid,
+                832,
+                &[
+                    b"proposal",
+                    ca.key.as_ref(),
+                    &c.nonce.to_le_bytes(),
+                    &[bump],
+                ],
+            )?;
+            save(
+                pa,
+                &Proposal {
+                    tag: 3,
+                    config: *ca.key,
+                    nonce: c.nonce,
+                    buffer: Pubkey::default(),
+                    code: [0; 32],
+                    base: [0; 32],
+                    generation: c.generation,
+                    review,
+                    uri,
+                    created: now,
+                    opened: if dev { 0 } else { now },
+                    approvals: 0,
+                    challenges: 0,
+                    yes: 0,
+                    no: 0,
+                    status: if dev { 0 } else { 1 },
+                    development: dev,
+                    kind: 1,
+                    next_developer: developer,
+                    next_reviewers: reviewers,
+                    acceptances: 0,
+                },
+            )?;
+            c.nonce = sum(c.nonce, 1)?;
+            save(ca, &c)
+        }
+        Action::AcceptRecovery => {
+            let pa = next_account_info(it)?;
+            let mut p = proposal(pa, pid, ca.key)?;
+            fresh(&p, &c, now)?;
+            check(
+                p.kind == 1
+                    && p.status <= 2
+                    && now < add(p.created, 7 * DAY + CHALLENGE + VOTE + EXECUTION)?,
+            )?;
+            let index = if *who.key == p.next_developer {
+                3
+            } else {
+                p.next_reviewers
+                    .iter()
+                    .position(|k| k == who.key)
+                    .ok_or(ProgramError::InvalidArgument)?
+            };
+            check(p.acceptances & (1 << index) == 0)?;
+            p.acceptances |= 1 << index;
+            save(pa, &p)
+        }
+        Action::ExecuteRecovery => {
+            let pa = next_account_info(it)?;
+            let mut p = proposal(pa, pid, ca.key)?;
+            fresh(&p, &c, now)?;
+            check(
+                p.kind == 1
+                    && p.status == 2
+                    && p.acceptances == 15
+                    && now < add(p.opened, CHALLENGE + VOTE + EXECUTION)?,
+            )?;
+            valid_keys(&p.next_developer, &p.next_reviewers)?;
+            c.developer = p.next_developer;
+            c.reviewers = p.next_reviewers;
+            c.generation = sum(c.generation, 1)?;
+            p.status = 4;
+            save(ca, &c)?;
+            save(pa, &p)
+        }
         Action::Initialize { .. } => Err(ProgramError::InvalidInstructionData),
     }
 }
@@ -657,6 +823,7 @@ mod tests {
             treasury: Pubkey::default(),
             nonce: 0,
             generation: 0,
+            development_until: 0,
         };
         let p = Proposal {
             tag: 3,
@@ -675,23 +842,28 @@ mod tests {
             yes: 0,
             no: 0,
             status: 1,
+            development: false,
+            kind: 0,
+            next_developer: Pubkey::default(),
+            next_reviewers: [Pubkey::default(); 3],
+            acceptances: 0,
         };
         (c, p)
     }
     #[test]
     fn unchallenged_waits_full_day() {
         let (c, p) = setup();
-        assert!(outcome(&p, &c, 10 + DAY - 1).is_err());
-        assert_eq!(outcome(&p, &c, 10 + DAY).unwrap(), 2);
+        assert!(outcome(&p, &c, 10 + CHALLENGE - 1).is_err());
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE).unwrap(), 2);
     }
     #[test]
     fn qualifying_challenge_requires_vote() {
         let (c, mut p) = setup();
         p.challenges = 210_000;
-        assert!(outcome(&p, &c, 10 + DAY).is_err());
-        assert_eq!(outcome(&p, &c, 10 + DAY + VOTE).unwrap(), 3);
-        p.yes = 2_100_000;
-        assert_eq!(outcome(&p, &c, 10 + DAY + VOTE).unwrap(), 2);
+        assert!(outcome(&p, &c, 10 + CHALLENGE).is_err());
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 3);
+        p.yes = 6_300_000;
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 2);
     }
     #[test]
     fn ties_and_low_turnout_block() {
@@ -699,9 +871,9 @@ mod tests {
         p.challenges = 210_000;
         p.yes = 1_050_000;
         p.no = 1_050_000;
-        assert_eq!(outcome(&p, &c, 10 + DAY + VOTE).unwrap(), 3);
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 3);
         p.no = 0;
-        assert_eq!(outcome(&p, &c, 10 + DAY + VOTE).unwrap(), 3);
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 3);
     }
     #[test]
     fn threshold_boundaries_and_overflow() {
@@ -709,5 +881,17 @@ mod tests {
         assert!(percent(210_000, 21_000_000, 100));
         assert!(sum(u64::MAX, 1).is_err());
         assert!(add(i64::MAX, 1).is_err());
+    }
+    #[test]
+    fn two_thirds_is_not_enough_and_founder_cap_cannot_meet_quorum() {
+        let (c, mut p) = setup();
+        p.challenges = 210_000;
+        p.yes = 4_200_000;
+        p.no = 0;
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 3);
+        p.no = 2_100_000;
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 3);
+        p.yes += 1;
+        assert_eq!(outcome(&p, &c, 10 + CHALLENGE + VOTE).unwrap(), 2);
     }
 }

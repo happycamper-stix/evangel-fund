@@ -1,6 +1,6 @@
 {
-  "observedAt": "2026-10-03T06:53:56.917626+00:00",
-  "deployment": "https://evangel-iavge14ok-happycamper-stixs-projects.vercel.app",
+  "observedAt": "2026-10-03T07:19:07.751884+00:00",
+  "deployment": "https://evangel-7q1uj0cfm-happycamper-stixs-projects.vercel.app",
   "publicSigningPage": "https://evangel.fund/governor#upgrade",
   "upgradeStatus": "legacy signing blocked; DAO candidate not deployed",
   "memberGasFunding": {
@@ -46,13 +46,19 @@
   "remaining": "Confirm DAO mint and reviewers; inspect immutable guard and recovery tradeoffs; real Devnet rehearsal; separately approved authority migration under current multisig rules; fresh DAO-reviewed factory upgrade; participant funding/venue acceptance; scheduled settlement and recovery; separately authorized mainnet release.",
   "daoCandidate": {
     "status": "local SBF tested; not deployed",
-    "challengeSeconds": 86400,
+    "challengeSeconds": 21600,
     "voteSeconds": 259200,
     "legacyUpgradeSigning": "blocked pending reviewed DAO migration",
     "tests": {
-      "sbfScenarios": 7,
-      "rustRules": 4
+      "sbfScenarios": 13,
+      "releasePreflight": 1,
+      "rustRules": 5
     },
-    "votingMint": null
+    "votingMint": null,
+    "version": 2,
+    "quorumBps": 3000,
+    "approvalRule": "strictly more than two-thirds",
+    "developmentMaxSeconds": 1209600,
+    "keyRecovery": "implemented; requires reviewed deployment"
   }
 }

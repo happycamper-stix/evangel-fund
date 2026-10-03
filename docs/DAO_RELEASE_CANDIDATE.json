@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "status": "local candidate; not deployed",
+  "production": {
+    "status": "local candidate only",
+    "developmentOnly": false,
+    "binarySha256": "8a788146144f9d6ec4392046ebfe7910231a716d0977a04f5db919afee2f37d6",
+    "binaryLength": 149312
+  },
+  "development": {
+    "status": "local candidate only",
+    "developmentOnly": true,
+    "binarySha256": "d12ee50bc69d63f5f6cc05620006bf8ff5dd121514f6acdcb59b3542efed4691",
+    "binaryLength": 149360
+  },
+  "votingMint": null,
+  "reviewers": null,
+  "publicActivationAuthorized": false
+}

@@ -1,6 +1,6 @@
 # Evangel project context
 
-- DAO candidate: see docs/DAO_GOVERNANCE.md. New upgrade design uses a 24-hour challenge window and 72-hour escalated vote; not deployed. Do not shorten existing milestone notices or claim the current Squads delay changed. Old staged upgrade signing is blocked pending reviewed guard/mint/authority migration.
+- DAO candidate: see docs/DAO_GOVERNANCE.md. New upgrade design uses a six-hour challenge window and 72-hour escalated vote, 30% quorum and strict two-thirds approval; not deployed. Separate development-only build expires fast mode after 14 days; production build rejects fast mode. Recovery requires acceptance by every replacement key. Do not shorten existing milestone notices or claim the current Squads delay changed. Old staged upgrade signing is blocked pending reviewed guard/mint/authority migration.
 
 - Solana only. Rust SBF program, Token-2022, SOL, Next.js and Wallet Standard. Do not add another chain's contracts, wallet provider or dependencies.
 - Native source: solana/program/src/lib.rs plus fees.rs and governance.rs. Client codec: lib/solana/program.mjs. Keep their wire formats aligned.

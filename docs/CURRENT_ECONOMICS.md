@@ -1,54 +1,40 @@
-# Upgrade governance candidate — 2026-10-03
+# Current economic and governance rules
 
-See [DAO_GOVERNANCE.md](DAO_GOVERNANCE.md). New upgrade proposals use a 24-hour challenge window and 72-hour escalated vote. This is locally implemented, not activated. Existing multisig and milestone notice periods are unchanged.
+Updated 2026-10-03. This document supersedes older fee splits and upgrade-window proposals. Mainnet/public trading remains disabled. Local candidates and isolated fixtures are not public deployment evidence.
 
-# Latest fee decision — 2026-10-02
+## Fees
 
-The user approved 5% per buy and sell including the venue share: 1% protocol, 2.55% development, 0.5% community, 0.8% governance, 0.15% foundation. Evangel receives 4% net. Divide actual net receipts 63.75% / 12.5% / 20% / 3.75%; do not deduct the protocol share twice. Unused governance still returns to development at daily close, excluding committed expenses.
+**5% per buy and per sell**, including venue charges:
 
-`lib/solana/fee-policy.mjs` defines and tests this target accounting. No production venue is enabled. The existing isolated curve and its custody accounting remain the previous version until a reviewed adapter implements the revised receipts; they must not be represented as the approved production economics.
+| Gross trade share | Recipient |
+|---|---|
+| 1% | Venue protocol |
+| 2.55% | Adopted project owner's development budget |
+| 0.5% | Community contributors |
+| 0.8% | Governance inference/API expenses |
+| 0.15% | Foundation |
 
-## Prior implementation record (superseded fee split)
+The actual 4% net venue receipt is split 63.75 / 12.5 / 20 / 3.75. Never charge the venue share twice. `lib/solana/fee-policy.mjs` defines these targets. Old 3% development / 1.35% governance fixture allocations are historical test behavior, not production policy. The reviewed venue adapter is not activated.
 
-# Current economics decisions
+Development fee income does not require a milestone. Community rewards and reserve allocations do. Fees book to the **UTC collection day**, not trade day. Unused governance and dust go to the same project's development budget at daily close; approved, incurred but unpaid commitments remain reserved. No speculative cost reservations, cross-project borrowing, or duplicate reimbursement.
 
-Status: implemented in local custody/curve fixtures and clients; production trading remains gated. This document supersedes conflicting economic requirements in IMPLEMENTATION_V2.md. Default custody rejects trading. No live settlement or public deployment is claimed.
+Permissionless settlement and a keeper implementation exist. The last recorded keeper dry run stopped at the undeployed adapter; no always-on signing service is claimed. Expense approval and payout retain existing two-day notices; the six-hour upgrade change does not shorten expense safeguards.
 
-## Confirmed
+## Tokens and funding
 
-- Solana only. Evangel’s public repository may participate as a project, including a project token under the same launch rules.
-- Every launch uses existing e/acc as its quote asset: CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU. Do not create a replacement e/acc mint on mainnet. Tests must use explicitly identified dummy assets.
-- Remove the e/acc buy-and-burn mechanism. Pairing does not burn tokens or guarantee net demand: buys put quote tokens into the pool and sells withdraw them.
-- Latest confirmed trading fee is 5% on buys and 5% on sells, each assessed on that trade's value, rather than 10% per trade. Implementation uses 3% development, 0.5% community contributors, 1.35% governance and 0.15% foundation, preserving the 5% total. The former burn share is redirected to development.
-- Unused governance funding returns to the development treasury of the project that generated it at the end of each day.
+- Solana only. Every project coin: 21M tokens, six decimals; 70% initial token-side liquidity/inventory, 30% governed reserve.
+- Verified adoption releases 1% upfront, inside the developer's total 20% cap and shared rolling 1%/21-day release ceiling. Remaining 29% is milestone-earned. At least 10% is for community/workers.
+- No mint/freeze authority after launch. Existing e/acc is the quote asset: `CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU`. No buy-and-burn or replacement e/acc mint. Test deployments use clearly identified dummy assets.
+- No developer-supplied quote liquidity is the launch objective, but real buyer liquidity is still necessary. Virtual balances are not spendable. Venue and quote-mint compatibility remain release gates.
+- Evangel's own public repository may participate under the same project rules; no Evangel token mint has been configured merely by permitting one.
+- Tokenless repository funding is supported. Donors need a wallet, not GitHub verification. Ownership/contributor claims require identity evidence.
+- Current SOL sponsorship funds milestones and has a 24-hour refund period. Owner payroll must be declared work. Direct unconditional donations to a personal wallet are not yet implemented.
+- Pilot caps remain 10 SOL lifetime repository funding and 1 SOL per SOL milestone.
 
-## Daily settlement design
+## Upgrade governance
 
-Use UTC days and project-specific accounting. Settle a closed day once, permissionlessly, to a fixed project development treasury. Preserve only actual paid costs and independently evidenced incurred costs already committed against that booking day's budget; commitments cannot exceed its accrued governance fees. Do not permit speculative expenses or unrestricted future-cost reservations to suppress surplus. Canceled or excess commitments return to the same project. Never borrow from contributor or other project balances.
+[Candidate v2](DAO_GOVERNANCE.md) implements a **six-hour public challenge window**, 72-hour escalated vote, 1% challenge threshold, 30% turnout and strictly greater than two-thirds approval. It adds reviewed, time-bounded development mode in a separate development-only artifact, irreversible public activation, and holder-approved key recovery. The production artifact rejects fast mode.
 
-A keeper submits the daily transaction; the program validates the day, amounts, destination and replay protection. Solana programs cannot wake themselves up at midnight. A late keeper must leave settlement callable and must not change who receives the money. An invoice payment delay must not make the same funds both refundable surplus and payable expenses.
+This DAO is not activated. Existing Squads authority and its 48-hour delay remain. Existing milestone/adoption/reimbursement notice periods remain two days. Do not substitute one clock for another.
 
-## Integration gates
-
-- Verify an established venue supports the exact e/acc quote mint and its token-program/extensions, fee accounting, custody and reserve rules before enabling trading.
-- A launch without developer-supplied quote liquidity requires a compatible bonding curve or equivalent mechanism that accumulates real e/acc from buyers. Conventional liquidity pools require real liquidity; virtual reserves are not spendable assets.
-- Reconcile external venue charges with the advertised trade fee before release.
-- Legacy global SOL fee instructions and buy/burn are rejected. Factory tag 10 requires a fresh deployment. No funded account migration is implemented.
-
-## Still proposals, not approved changes
-
-Automatic developer fee income and the 3%/0.5% development/community split are implemented. A founder allocation split between time vesting and milestone bonuses remains a proposal. The existing 21M supply and founder/community constraints are not implicitly changed by choosing a quote asset.
-
-## Reimbursement timing
-
-Quorum proposals wait at least two days. An already incurred invoice therefore targets a future booking day; execution can only reserve that day's available governance fees. Operators front costs, and neither a submitted invoice nor a future proposal encumbers current-day revenue. Missing the day requires a fresh proposal. Fees may be insufficient for reimbursement. Approval waits a further two-day payout notice; reserved unpaid amounts survive daily close. Cancellation frees funds without making the invoice reusable.
-
-## Implementation and operations
-
-FeeDay PDA seeds: fee-day, project address, signed little-endian UTC day. Fee vault seeds: fee-vault, FeeDay address. The account records cumulative fees, remaining development/community/governance/foundation budgets and outstanding commitments. Fee floors are calculated cumulatively per day; remaining dust goes to development at close.
-
-Community quote rewards use the existing milestone state machine with quoteDay binding, independent work submission and fixed recipient. They never consume founder token caps or SOL sponsorships. Developer fee claims require adoption but no milestone.
-
-`npm run solana:settle-days` previews overdue settlements using finalized chain time. `--broadcast` sends closure and development payout atomically, creating the fixed recipient's token account if needed. A protected funded operator must schedule the runner after 00:00 UTC. It is not activated against an undeployed program. The web UI also exposes permissionless close/claim actions.
-
-Mainnet e/acc is pinned in the asset config. This test-only binary requires a distinct immutable six-decimal dummy quote mint with no extensions. It intentionally cannot be represented as a mainnet e/acc adapter. Production mint extensions and the venue require an independently reviewed implementation before mainnet support.
+Before release: confirm mint/reviewers, inspect the exact final artifacts and authority migration, test with real participants, verify quote-mint extensions and venue accounting, complete operating-service/recovery gates, and obtain separate mainnet authorization.

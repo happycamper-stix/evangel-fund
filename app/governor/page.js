@@ -21,18 +21,28 @@ export default function GovernorPage() {
         <h2>Holder challenges · candidate rules</h2>
         <p>
           Developers manage ordinary product work. Program upgrades require two
-          reviewers to inspect the exact build before a 24-hour holder challenge
-          window opens.
+          reviewers to inspect the exact build before a six-hour holder
+          challenge window opens.
         </p>
         <p>
           1% of the fixed voting supply can escalate a change to a 72-hour vote.
-          It then needs 10% turnout and a strict majority in favor. A tie or
-          insufficient turnout blocks the change.
+          It then needs 30% turnout and more than two-thirds of votes in favor.
+          A tie or insufficient turnout blocks the change.
         </p>
         <p>
           Voting tokens must be deposited at least seven days before proposal
           creation and stay locked through the vote. Votes cannot authorize
           another project's assets.
+        </p>
+        <p>
+          Development-only deployments can execute after two inspections, with
+          fast mode expiring after 14 days. The public-release build has no fast
+          mode.
+        </p>
+        <p>
+          Holders can replace lost signing keys through a mandatory vote. Every
+          replacement key must sign acceptance; recovery cannot change the
+          voting token or treasury.
         </p>
         <p>
           <strong>Not active on Devnet yet.</strong> The voting mint and
