@@ -1,22 +1,24 @@
 {
-  "observedAt": "2026-10-03T07:19:07.751884+00:00",
-  "deployment": "https://evangel-7q1uj0cfm-happycamper-stixs-projects.vercel.app",
-  "publicSigningPage": "https://evangel.fund/governor#upgrade",
-  "upgradeStatus": "legacy signing blocked; DAO candidate not deployed",
+  "observedAt": "2026-10-03T21:22:18.409491+00:00",
+  "deployment": "https://evangel-qd5g5dbr2-happycamper-stixs-projects.vercel.app",
+  "publicSigningPage": "https://evangel.fund/governor/rehearsal",
+  "upgradeStatus": "Existing factory signing blocked; immutable DAO guard controls disposable Devnet target only",
   "memberGasFunding": {
     "signature": "27chbz7cWXPZCYheo1AnGH5b2XnHEa3SG6Kryj8dBBTTV62k1wspaYTg2wAHhzm7rHXHETJXbVyTvDnVzKCkYLE1",
     "lamportsPerMember": 20000000,
     "cluster": "devnet"
   },
   "tests": {
-    "unitAndIntegration": 72,
-    "browser": 50,
+    "unitAndIntegration": 74,
+    "browser": 58,
+    "daoSuite": 23,
     "build": "passed"
   },
   "liveChecks": {
     "upgradeEndpoint": 503,
     "governorPage": 200,
-    "launchEnabled": false
+    "launchEnabled": false,
+    "daoRehearsal": "Finalized guard/configuration/mint/target authority verified; live deposit page and developer balance endpoint return HTTP 200"
   },
   "keeperDryRun": {
     "startedAt": "2026-10-03T01:53:57.962Z",
@@ -43,22 +45,23 @@
     "broadcast": false
   },
   "baselinePromotionGuard": "refused undeployed upgrade; baseline unchanged",
-  "remaining": "Confirm DAO mint and reviewers; inspect immutable guard and recovery tradeoffs; real Devnet rehearsal; separately approved authority migration under current multisig rules; fresh DAO-reviewed factory upgrade; participant funding/venue acceptance; scheduled settlement and recovery; separately authorized mainnet release.",
+  "remaining": "Participant deposits, seven-day maturity and real-time challenge/voting/recovery rehearsal; separately approved factory migration under current multisig rules; fresh DAO-reviewed factory upgrade; participant funding/venue acceptance; scheduled settlement and recovery; separately authorized mainnet release.",
   "daoCandidate": {
-    "status": "local SBF tested; not deployed",
+    "status": "immutable Devnet guard; disposable target initialized; user deposits pending",
     "challengeSeconds": 21600,
     "voteSeconds": 259200,
     "legacyUpgradeSigning": "blocked pending reviewed DAO migration",
     "tests": {
-      "sbfScenarios": 13,
-      "releasePreflight": 1,
+      "daoSuite": 23,
       "rustRules": 5
     },
     "votingMint": null,
-    "version": 2,
+    "version": 3,
     "quorumBps": 3000,
     "approvalRule": "strictly more than two-thirds",
     "developmentMaxSeconds": 1209600,
-    "keyRecovery": "implemented; requires reviewed deployment"
+    "keyRecovery": "implemented and locally tested; real participant rehearsal pending",
+    "rehearsalMint": "E2yHAAxMkxe56U5G5gjy796EPm3xJzoYoEbvzRAseYvA",
+    "reviewerWalletProofsVerified": 4
   }
 }

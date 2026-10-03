@@ -19,23 +19,40 @@ export const GENESIS = NETWORK.genesis;
 export const ROOT = NETWORK.root;
 // Preserve the existing test-only Keychain identity so the funded payer remains accessible.
 const SERVICE = "evangel-solana-testnet-fixture-v1";
-export async function rpc(method, params = []) {
-  const response = await fetch(RPC_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-    signal: AbortSignal.timeout(20000),
-  });
-  if (!response.ok)
-    throw new Error(
-      `Solana ${NETWORK.cluster} RPC HTTP ${response.status}; no endpoint or credential logged.`,
-    );
-  const data = await response.json();
-  if (data.error)
-    throw new Error(
-      `Solana ${NETWORK.cluster} RPC ${method} failed (code ${Number(data.error.code)}).`,
-    );
-  return data.result;
+export async function rpc(
+  method,
+  params = [],
+  {
+    fetcher = fetch,
+    sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  } = {},
+) {
+  // Retry only rate-limited HTTP requests, preserving the exact signed wire payload.
+  // Transaction generation and journals remain outside this loop.
+  const body = JSON.stringify({ jsonrpc: "2.0", id: 1, method, params });
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const response = await fetcher(RPC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      signal: AbortSignal.timeout(20000),
+    });
+    if (response.status === 429 && attempt < 4) {
+      await response.body?.cancel();
+      await sleep(Math.min(10000, 1000 * 2 ** attempt));
+      continue;
+    }
+    if (!response.ok)
+      throw new Error(
+        `Solana ${NETWORK.cluster} RPC HTTP ${response.status}; no endpoint or credential logged.`,
+      );
+    const data = await response.json();
+    if (data.error)
+      throw new Error(
+        `Solana ${NETWORK.cluster} RPC ${method} failed (code ${Number(data.error.code)}).`,
+      );
+    return data.result;
+  }
 }
 export async function assertDevelopmentCluster() {
   if ((await rpc("getGenesisHash")) !== GENESIS)

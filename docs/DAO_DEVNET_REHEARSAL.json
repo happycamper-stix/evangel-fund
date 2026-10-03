@@ -1,0 +1,67 @@
+{
+  "cluster": "devnet",
+  "program": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz",
+  "production": {
+    "status": "immutable Devnet guard",
+    "developmentOnly": false,
+    "binarySha256": "9c700378cb2956556b1d1360d078c1c8846cb89167024335b85a6fd427f047a9",
+    "binaryLength": 152816
+  },
+  "supply": "21000000000000",
+  "expected": {
+    "target": "5m3yvpjzqpRc1NraLH3coPniPJogd5EDT8rxzzvxzvog",
+    "mint": "E2yHAAxMkxe56U5G5gjy796EPm3xJzoYoEbvzRAseYvA",
+    "developer": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+    "reviewers": [
+      "2xfWrsDopF88hje19HnghXCSbqAmQum297L2KGoAMd3h",
+      "5GcGNF4fTJhBiGLCqwXxFTj5tqWUjRAsGAmMvSMJ5sL4",
+      "FqXojD69EQyiT1Vckz3twzMTUXNr4yL3Qe5kcroAV2GM"
+    ],
+    "treasury": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc"
+  },
+  "config": "FJCenCg8beDMkMmH9PqUjT8qbRAN9XNUEpCAzHRXsKE3",
+  "authority": "HgWu7gh4q7zo23Kt3SBGikKMksPjKh9AY7B2NQwUxKSC",
+  "allocations": [
+    {
+      "owner": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
+      "initialAmount": "4200000000000",
+      "devnetSolLamports": 20000000,
+      "associatedAccount": "91niWd9XNWq772F9BLkwDQmMtTqNgcHXNo3bKtT1GB1S"
+    },
+    {
+      "owner": "2xfWrsDopF88hje19HnghXCSbqAmQum297L2KGoAMd3h",
+      "initialAmount": "5600000000000",
+      "devnetSolLamports": 20000000,
+      "associatedAccount": "Cs6DoCdnjPocqxYiBhkkvR19jMQ4n9QjopMj7QaLRTp4"
+    },
+    {
+      "owner": "5GcGNF4fTJhBiGLCqwXxFTj5tqWUjRAsGAmMvSMJ5sL4",
+      "initialAmount": "5600000000000",
+      "devnetSolLamports": 20000000,
+      "associatedAccount": "Bn9mWWBWwHiH6jUASVXsaUsS566wES7VVU6c4NmYLhLo"
+    },
+    {
+      "owner": "FqXojD69EQyiT1Vckz3twzMTUXNr4yL3Qe5kcroAV2GM",
+      "initialAmount": "5600000000000",
+      "devnetSolLamports": 20000000,
+      "associatedAccount": "9u2Z9ZqPaNJeXeNGYTiaZoKs8YpAGoPXt7NWddUmpWup"
+    }
+  ],
+  "signatures": {
+    "allocation0": "2VdYLVZk6eN5PMwTYS7uV59UPdB22fPLUGjmrjd85wafpKG5GsWqmnbUwL1MqWRLDcso5rs1NjV613xXckCbTd3q",
+    "allocation1": "3Ykun4CC4KSwycSeibXAjCXb7EuqFN7cC3zv9bgiUgYj3PuCcsaWxXZXzvbNKkZzsnCnHYyRcdjXjuqnqM4Rc3yt",
+    "allocation2": "25ULtRn5nZqaCR5weBo1YbqbEAagwigGHSKKzowBTMVopP9JTwTC3WNYdpjaajSmtpyk4XYQV23ZT8rSwNzfk6BJ",
+    "allocation3": "3emQhsPpJjCkA3WnBNyRE6ueH3o3PFsAkCZeKemkKqs2rehLGcwcDa5idH5gz7oSvyMcJkAa4QUTzYWptUrFWicG",
+    "revokeMint": "2mqTopdED1HDAijG5CcqiKY3ww9B5geYJfg2rPr1WHY9uuY2M2w4h16TM7PZ4JtTphgpYkc6JfY2Bh8pbcMqBHE3",
+    "freezeGuard": "4hGPLu3PCXB4ksGXRcNBaKW3aESK2hkRjC6YZtMng25zDXCkbVGLGvUpGNm6mw2N3dKVNaQuF1Fh4CEJrMvHVFTf",
+    "initialize": "2ZiLJYarEo3kNJMJ1azLnHZvNAKzSjhucWwUtYxWJtpLNiLuvF3cnXvHuDTyEqvPPLxi9BqaaiQBVqM8mCA3eySt",
+    "deployTarget": "61jazfjLtQKkrsNq2PRDLA9cF635bkjJeVmbfXCKZMBUA8FTwdHjX6MRWWXPE4FWqUBq6JCLeRUCSKiGmXvXDgd6",
+    "createMint": "31Fm7RmUkfrjUf66ukTV6iTfpRPcT1u2cXeCERM329QGWmRMM7xYGxbhsFpbai3hckeHhj22hdrg932U6moYpgcQ"
+  },
+  "disposable": true,
+  "targetPurpose": "Separate loader rehearsal target using the reviewed guard bytecode; no business state or factory funds",
+  "publicActivation": false,
+  "verifiedAt": "2026-10-03T21:18:04.742Z",
+  "observedSlot": 507131216,
+  "factoryAuthorityUnchanged": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy"
+}

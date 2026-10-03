@@ -1,6 +1,6 @@
 # Holder challenge governance — candidate v2
 
-Status: e/acc-compatible candidate deployed and bytecode verified on Devnet; mutable, uninitialized and not activated. See DAO_DEVNET_CANDIDATE.json. The factory still uses the existing Squads authority and recorded 48-hour delay. The old staged upgrade is superseded; its website signing and preparation paths remain blocked. No authority is transferred by publishing these rules.
+Status: e/acc-compatible guard is immutable on Devnet and initialized for a separate disposable target (DAO_DEVNET_REHEARSAL.json). Holder deposits and real-time voting rehearsal remain pending. The real factory has not migrated. See DAO_DEVNET_CANDIDATE.json. The factory still uses the existing Squads authority and recorded 48-hour delay. The old staged upgrade is superseded; its website signing and preparation paths remain blocked. No authority is transferred by publishing these rules.
 
 ## Decisions and scope
 

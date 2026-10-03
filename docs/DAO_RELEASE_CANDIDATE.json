@@ -1,8 +1,8 @@
 {
   "version": 3,
-  "status": "Devnet candidate deployed and bytecode verified; not initialized or activated",
+  "status": "Immutable Devnet guard; disposable rehearsal initialized; factory unchanged",
   "production": {
-    "status": "deployed mutable Devnet candidate",
+    "status": "immutable Devnet guard",
     "developmentOnly": false,
     "binarySha256": "9c700378cb2956556b1d1360d078c1c8846cb89167024335b85a6fd427f047a9",
     "binaryLength": 152816
@@ -24,7 +24,7 @@
   "devnetProgram": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz",
   "developer": "92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc",
   "reviewerConfirmation": {
-    "status": "Public addresses supplied by user; wallet possession and review attestations pending",
+    "status": "All four wallet-control signatures verified; does not establish reviewer independence",
     "independenceVerified": false
   }
 }

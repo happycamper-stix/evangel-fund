@@ -21,7 +21,7 @@ export default function GovernorPage() {
         <h2>Holder challenges · candidate rules</h2>
         <p>
           <a className="ev-link" href="/governor/rehearsal">
-            Verify your reviewer wallet →
+            Open the Devnet rehearsal →
           </a>
         </p>
         <p>

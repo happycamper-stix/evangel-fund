@@ -18,6 +18,7 @@ export async function writeUpgradeBuffer({
   payer,
   staged,
   rent,
+  createJournal = "venue-upgrade-buffer-create.json",
 }) {
   if (!staged) {
     await submit(
@@ -39,7 +40,7 @@ export async function writeUpgradeBuffer({
         },
       ],
       payer,
-      { journal: "venue-upgrade-buffer-create.json" },
+      { journal: createJournal },
     );
   }
   const missing = [];

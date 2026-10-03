@@ -1,3 +1,4 @@
+import RehearsalDeposit from "@/components/governance/RehearsalDeposit";
 import GuidePage from "@/components/site/SiteChrome";
 import ReviewerProof from "@/components/governance/ReviewerProof";
 import release from "@/docs/DAO_RELEASE_CANDIDATE.json";
@@ -13,24 +14,28 @@ export default function RehearsalPage() {
     <GuidePage
       active="/governor"
       kicker="DEVNET REHEARSAL"
-      title="Verify your reviewer wallet."
-      description="Confirm wallet control before the governance rehearsal."
+      title="Devnet governance rehearsal."
+      description="Deposit your test voting tokens to start the rehearsal."
     >
-      <ReviewerProof context={context} />
+      <RehearsalDeposit />
+      <details className="ev-card">
+        <summary>Wallet-control proof tools</summary>
+        <ReviewerProof context={context} />
+      </details>
       <section className="ev-card">
         <h2>What happens next</h2>
         <ol>
           <li>
-            Each participant signs and sends their downloaded proof to the
-            deployment operator.
+            Switch your wallet to Solana Devnet, connect, and deposit the test
+            voting balance.
           </li>
           <li>
-            The operator verifies all proofs against the exact candidate before
-            configuring the rehearsal.
+            Wait seven days from the finalized deposit before creating a
+            proposal that uses it.
           </li>
           <li>
-            A separate Devnet target and dummy voting token are used to test
-            governance. The existing factory remains under its current multisig.
+            Review the exact upgrade, then rehearse the six-hour challenge and
+            72-hour contested vote on the disposable target.
           </li>
         </ol>
         <p>

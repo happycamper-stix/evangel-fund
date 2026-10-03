@@ -1,8 +1,8 @@
 # Update: e/acc compatibility resolved
 
-The new v3 guard supports the live e/acc mint's immutable self-contained metadata and Token-2022 ImmutableOwner accounts. Live raw-account inspection passes; 21 DAO tests include compiled-program transfers, malformed and malicious extensions, and truncated metadata. Five Rust rule tests and Clippy pass. No factory upgrade authority has moved. The separate mutable guard is deployed at `9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz` on Devnet; finalized bytes match the reviewed build. See DAO_DEVNET_CANDIDATE.json. Live read-only simulation also confirms production-mode rejection of fast initialization (DAO_DEVNET_SIMULATION.json). Existing factory authority is verified unchanged.
+The new v3 guard supports the live e/acc mint's immutable self-contained metadata and Token-2022 ImmutableOwner accounts. Live raw-account inspection passes; 21 DAO tests include compiled-program transfers, malformed and malicious extensions, and truncated metadata. Five Rust rule tests and Clippy pass. No factory upgrade authority has moved. The guard is now immutable and configured for the disposable target in DAO_DEVNET_REHEARSAL.json. It is deployed at `9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz` on Devnet; finalized bytes match the reviewed build. See DAO_DEVNET_CANDIDATE.json. Live read-only simulation also confirms production-mode rejection of fast initialization (DAO_DEVNET_SIMULATION.json). Existing factory authority is verified unchanged.
 
-The entries below record the preceding pass; its extension incompatibility is now resolved. Reviewer identities, governance activation, holder UI and real participant rehearsal remain separate.
+The entries below record the preceding pass; its extension incompatibility is now resolved. All four wallet-control proofs were verified, test balances distributed, and a Devnet deposit interface added. Participant deposits, real-time challenge/voting/recovery, and factory migration are still pending.
 
 ---
 

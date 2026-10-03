@@ -80,7 +80,7 @@ export default function ReviewerProof({ context }) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   return (
-    <section className="ev-card">
+    <section className="ev-card" aria-label="Reviewer wallet verification">
       <h2>Confirm your wallet</h2>
       <p>
         This is a message signature. No SOL is needed. It does not approve an

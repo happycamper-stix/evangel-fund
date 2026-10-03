@@ -1,3 +1,13 @@
+## Current stage — deposit test voting tokens
+
+All four wallet-control proofs were verified. The guard is immutable and a disposable target is configured with these keys. TESTGOV allocations are 4.2M for the developer and 5.6M for each reviewer; these are deliberately test-only balances. Each participant also received 0.02 Devnet SOL. No mainnet assets were used.
+
+Open https://evangel.fund/governor/rehearsal, switch the wallet to Devnet, connect, review the verified balance and deposit. Each deposit starts its own seven-day maturity period. Do not withdraw/redeposit unless you intend to restart that period. Challenges and votes additionally lock stake through their voting deadline.
+
+The target is an isolated loader fixture using the reviewed guard bytecode, not the existing factory. Receipt addresses and signatures are in DAO_DEVNET_REHEARSAL.json. No factory funds or authority moved. The instructions below remain available for future proof verification.
+
+---
+
 # Devnet participant wallet verification
 
 Open https://evangel.fund/governor/rehearsal in a wallet-enabled browser.

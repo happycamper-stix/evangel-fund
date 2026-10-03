@@ -35,3 +35,5 @@ lib/operator
 /solana
 
 !/docs/DAO_RELEASE_CANDIDATE.json
+
+!/docs/DAO_DEVNET_REHEARSAL.json

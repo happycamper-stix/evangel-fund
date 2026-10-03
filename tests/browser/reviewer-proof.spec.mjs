@@ -5,15 +5,18 @@ test("reviewer page clearly separates message proof from transactions", async ({
   page,
 }) => {
   await page.goto("/governor/rehearsal");
+  await page.getByText("Wallet-control proof tools", { exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Verify your reviewer wallet." }),
+    page.getByRole("heading", { name: "Devnet governance rehearsal." }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Connect wallet", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText(
-    "No compatible wallet found",
-  );
+  await expect(
+    page
+      .getByRole("region", { name: "Reviewer wallet verification" })
+      .getByRole("status"),
+  ).toContainText("No compatible wallet found");
   await expect(
     page.getByRole("button", { name: "Sign wallet-control message" }),
   ).toHaveCount(0);
@@ -58,6 +61,7 @@ test("configured address alone cannot produce a verified proof", async ({
     },
   );
   await page.goto("/governor/rehearsal");
+  await page.getByText("Wallet-control proof tools", { exact: true }).click();
   await page
     .getByRole("button", { name: "Connect wallet", exact: true })
     .click();
@@ -70,9 +74,11 @@ test("configured address alone cannot produce a verified proof", async ({
   await page
     .getByRole("button", { name: "Sign wallet-control message" })
     .click();
-  await expect(page.getByRole("status")).toContainText(
-    "Wallet signature is invalid",
-  );
+  await expect(
+    page
+      .getByRole("region", { name: "Reviewer wallet verification" })
+      .getByRole("status"),
+  ).toContainText("Wallet signature is invalid");
   await expect(
     page.getByRole("button", { name: "Download verification proof" }),
   ).toHaveCount(0);

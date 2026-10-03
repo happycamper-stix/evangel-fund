@@ -1,6 +1,6 @@
 # DAO upgrade guard — candidate v3 internal review
 
-Date: 2026-10-03. This is a first-party engineering review, not independent certification or a claim of exploit immunity. A separate mutable candidate is deployed and bytecode verified on Devnet (DAO_DEVNET_CANDIDATE.json). No initialization, authority transfer or public voting is claimed.
+Date: 2026-10-03. This is a first-party engineering review, not independent certification or a claim of exploit immunity. The guard is immutable and bytecode verified on Devnet. A disposable target was initialized and its upgrade authority transferred to the guard PDA (DAO_DEVNET_REHEARSAL.json). Existing factory authority is unchanged. Deposits and real-time voting are not yet complete.
 
 ## Artifacts
 

@@ -1,3 +1,4 @@
+import { rehearsalState } from "../../lib/solana/rehearsal-state.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -124,5 +125,46 @@ test("live gate verifies one finalized account observation and rejects substitut
       },
     }),
     /differs/,
+  );
+
+  const rehearsal = { ...release, disposable: true, publicActivation: false };
+  const owner = expected.developer;
+  const tokenData = Buffer.alloc(170);
+  tokenData.set(pub(expected.mint));
+  tokenData.set(pub(owner), 32);
+  tokenData.writeBigUInt64LE(4200000000000n, 64);
+  tokenData[108] = 1;
+  tokenData.set([2, 7, 0, 0, 0], 165);
+  const ownerRpc = async (method, params) => {
+    if (method === "getMultipleAccounts" && params[0].length === 2) {
+      assert.equal(params[1].minContextSlot, 100);
+      return { context: { slot: 101 }, value: [raw(tokenData, TOKEN), null] };
+    }
+    return rpcFor(accounts)(method, params);
+  };
+  const holder = await rehearsalState({
+    rpc: ownerRpc,
+    release: rehearsal,
+    owner,
+  });
+  assert.equal(holder.walletAmount, "4200000000000");
+  assert.equal(holder.stakeAmount, "0");
+  assert.equal(holder.matureAt, null);
+  await assert.rejects(
+    rehearsalState({ rpc: ownerRpc, release: rehearsal, owner: program }),
+    /participant/,
+  );
+  await assert.rejects(
+    rehearsalState({
+      rpc: ownerRpc,
+      release: { ...rehearsal, publicActivation: true },
+      owner,
+    }),
+    /disposable/,
+  );
+  tokenData[0] ^= 1;
+  await assert.rejects(
+    rehearsalState({ rpc: ownerRpc, release: rehearsal, owner }),
+    /token account/,
   );
 });

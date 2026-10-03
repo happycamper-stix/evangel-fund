@@ -2,12 +2,14 @@
   "cluster": "devnet",
   "program": "9Ys55BCVdd7SpYzSSmEoZuthit3xN664EooH34mxBFTz",
   "programData": "GxQaw6woqMUvVABDPdB4J7nR4RE1WTiLQxcbqxyszmTx",
-  "upgradeAuthority": "HJQv3jt9yMhxhKkUyzN1Csj3w3FxJ2ASfU9q8C26RDpb",
-  "status": "deployed candidate; mutable; not initialized; no factory authority",
+  "upgradeAuthority": null,
+  "status": "immutable guard; disposable Devnet rehearsal initialized; no factory authority",
   "developmentOnly": false,
   "binarySha256": "9c700378cb2956556b1d1360d078c1c8846cb89167024335b85a6fd427f047a9",
   "binaryLength": 152816,
-  "observedSlot": 506929977,
+  "observedSlot": 507131216,
   "deploymentSignature": "5hxwFzdFCg9Hn3bY4T6sYbCpex9qLvWMycbnfSDcbZNk9buXhi3kEmi2bWo8BYhfQAz64LaQrDZ2KVkQxWyvcKqU",
-  "factoryAuthorityUnchanged": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy"
+  "factoryAuthorityUnchanged": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy",
+  "immutabilitySignature": "4hGPLu3PCXB4ksGXRcNBaKW3aESK2hkRjC6YZtMng25zDXCkbVGLGvUpGNm6mw2N3dKVNaQuF1Fh4CEJrMvHVFTf",
+  "rehearsalConfig": "FJCenCg8beDMkMmH9PqUjT8qbRAN9XNUEpCAzHRXsKE3"
 }
