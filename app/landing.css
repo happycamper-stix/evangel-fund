@@ -839,3 +839,36 @@
   transform: none;
   filter: none;
 }
+
+/* A quieter front door: one invitation, one emblem, two destinations. */
+.landing-minimal .landing-nav { justify-content: space-between; }
+.landing-minimal .landing-hero { min-height: 700px; padding-block: 95px; gap: 80px; }
+.landing-minimal .landing-intro { max-width: 320px; font-size: 18px; line-height: 1.6; }
+.landing-minimal .landing-actions { margin-top: 30px; }
+.landing-minimal .signal-art { width: 90%; justify-self: end; box-shadow: 10px 12px 0 #ff572d; }
+.landing-minimal .broadcast-rings i:not(:first-child) { display: none; }
+.landing-minimal .broadcast-rings i { border-color: #c8c1b0; }
+.landing-doors { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #45443d; padding: 38px 0 50px; gap: 60px; }
+.landing-doors a { text-decoration: none; color: #f2efe5; }
+.landing-doors a > span { color: #bcb8ac; font: 10px monospace; letter-spacing: 1.5px; }
+.landing-doors h2 { font-size: clamp(22px, 2.8vw, 36px); letter-spacing: -1px; font-weight: 600; display: flex; justify-content: space-between; gap: 15px; margin: 16px 0 0; }
+.landing-doors b { color: #ff704c; font-weight: 400; transition: transform .2s ease; }
+.landing-doors a:hover b { transform: translate(3px, -3px); }
+@media (max-width: 900px) {
+  .landing-minimal .landing-hero { gap: 35px; min-height: 600px; }
+}
+@media (max-width: 650px) {
+  .landing-minimal .landing-nav { gap: 20px; }
+  .landing-minimal .landing-nav nav { width: auto; gap: 18px; flex-wrap: wrap; }
+  .landing-minimal .landing-hero { padding-block: 52px; gap: 48px; min-height: auto; }
+  .landing-minimal h1 { margin-block: 26px; }
+  .landing-minimal .landing-intro { font-size: 16px; max-width: 280px; }
+  .landing-minimal .signal-art { width: 75%; max-width: 300px; justify-self: center; }
+  .landing-doors { grid-template-columns: 1fr; gap: 32px; padding-block: 32px; }
+  .landing-minimal .landing-footer { padding-top: 25px; }
+}
+@media (min-width: 651px) and (max-width: 1000px) {
+  .landing-minimal .landing-hero { grid-template-columns: minmax(0, 1fr); gap: 55px; }
+  .landing-minimal .signal-art { width: 52%; max-width: 350px; justify-self: center; }
+  .landing-minimal h1 { font-size: clamp(72px, 11vw, 110px); letter-spacing: -.065em; }
+}
