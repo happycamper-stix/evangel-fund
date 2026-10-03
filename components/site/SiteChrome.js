@@ -5,12 +5,12 @@ export function SiteLinks({ active }) {
   return (
     <nav className="site-links" aria-label="Main navigation">
       {[
-        ["/launch", "Launchpad"],
-        ["/fund", "Fund open source"],
-        ["/eacc", "e/acc"],
-        ["/governor", "Governor"],
+        ["/launch", "Token launches"],
+        ["/fund", "Fund projects"],
+        ["/eacc", "How it works"],
+        ["/governor", "Governance"],
         ["/docs", "Docs"],
-        ["/verify", "Verify"],
+        ["/verify", "Verify GitHub"],
       ].map(([href, label]) => (
         <Link
           key={href}
@@ -50,7 +50,7 @@ export function SiteFooter() {
       <nav aria-label="Resources">
         <Link href="/docs">Documentation</Link>
         <Link href="/setup">Funding guide</Link>
-        <Link href="/governor">Governor status</Link>
+        <Link href="/governor">Governance status</Link>
       </nav>
       <small>
         {solanaNetwork().cluster} pilot · Test assets only · Public trading not

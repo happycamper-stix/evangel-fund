@@ -10,7 +10,7 @@ export default function Page() {
     <GuidePage
       active="/fund"
       kicker="SOLANA / OSS FUNDING"
-      title="Fund work worth doing."
+      title="How project funding works."
       description="Register a repository, verify ownership and sponsor community milestones."
     >
       <section className="ev-card">

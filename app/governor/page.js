@@ -14,7 +14,7 @@ export default function GovernorPage() {
     <GuidePage
       active="/governor"
       kicker="EVIDENCE BEFORE APPROVAL"
-      title="Back the work. Check the proof."
+      title="Governance & approvals."
       description="Evidence review for community decisions and open-source worker rewards."
     >
       <Upgrade />

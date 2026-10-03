@@ -40,9 +40,9 @@ export default async function HomePage({ searchParams }) {
           <span className="brand-period">.</span>
         </Link>
         <nav aria-label="Main navigation">
-          <Link href="/launch">Launchpad</Link>
-          <Link href="/fund">Fund</Link>
-          <Link href="/eacc">e/acc</Link>
+          <Link href="/launch">Token launches</Link>
+          <Link href="/fund">Fund projects</Link>
+          <Link href="/eacc">How it works</Link>
           <Link href="/docs">Docs ↗</Link>
         </nav>
       </header>
@@ -62,7 +62,7 @@ export default async function HomePage({ searchParams }) {
             </p>
             <div className="landing-actions">
               <Link className="landing-primary" href="/fund">
-                Back a builder <span>↗</span>
+                Explore projects <span>↗</span>
               </Link>
             </div>
             <p className="landing-status">
@@ -72,8 +72,8 @@ export default async function HomePage({ searchParams }) {
           <Signal />
         </section>
         <section className="landing-doors" aria-label="Explore Evangel">
-          <Link href="/launch"><span>01 / CREATE</span><h2>Start a movement. <b aria-hidden="true">↗</b></h2></Link>
-          <Link href="/fund"><span>02 / SUPPORT</span><h2>Back the builders. <b aria-hidden="true">↗</b></h2></Link>
+          <Link href="/launch"><span>TOKENS</span><h2>Explore token launches. <b aria-hidden="true">↗</b></h2></Link>
+          <Link href="/fund"><span>PROJECT FUNDING</span><h2>Fund open-source work. <b aria-hidden="true">↗</b></h2></Link>
         </section>
       </main>
       <footer className="landing-footer">
@@ -83,7 +83,7 @@ export default async function HomePage({ searchParams }) {
         <span>Ideas spread through people.</span>
         <nav aria-label="Resources">
           <Link href="/docs">Docs</Link>
-          <Link href="/governor">Governor status</Link>
+          <Link href="/governor">Governance status</Link>
           <Link href="/setup">Funding guide</Link>
         </nav>
       </footer>

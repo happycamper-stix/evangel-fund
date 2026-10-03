@@ -1,23 +1,21 @@
 import Link from "next/link";
 export default function BuilderPath({ active }) {
   return (
-    <nav className="builder-path" aria-label="Builder journey">
+    <nav className="builder-path" aria-label="Choose what to do">
       {[
-        ["/verify", "01", "Establish your identity", "Connect GitHub + wallet"],
+        ["/verify", "Verify your GitHub role", "For repository owners and contributors"],
         [
           "/fund",
-          "02",
-          "Fund open-source work",
-          "Back a repo. Reward delivery.",
+          "Fund a project",
+          "Browse repositories and support their work",
         ],
-        ["/launch", "03", "Rally a community", "Explore e/acc-paired launches"],
-      ].map(([href, n, title, detail]) => (
+        ["/launch", "Explore token launches", "View community tokens and launch availability"],
+      ].map(([href, title, detail]) => (
         <Link
           key={href}
           href={href}
-          aria-current={active === href ? "step" : undefined}
+          aria-current={active === href ? "page" : undefined}
         >
-          <span className="builder-step">{n} /</span>
           <span>
             <strong>{title}</strong>
             <small>{detail}</small>

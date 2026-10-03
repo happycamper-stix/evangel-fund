@@ -6,6 +6,7 @@ import { getCreateAssociatedTokenIdempotentInstruction } from "@solana-program/t
 import { SiteHeader, SiteFooter } from "../site/SiteChrome";
 import Wallet, { useSolana } from "./Wallet";
 import BuilderPath from "@/components/site/BuilderPath";
+import Link from "next/link";
 import FeePanel from "./FeePanel";
 import GovernancePanel from "./GovernancePanel";
 import { FOUNDATION } from "@/lib/solana/config.mjs";
@@ -89,13 +90,13 @@ export default function Platform({ mode, config }) {
           </p>
           <h1>
             {mode === "fund"
-              ? "Back the people moving us forward."
-              : "Give your idea a following."}
+              ? "Fund open-source projects."
+              : "Explore community tokens."}
           </h1>
           <p>
             {mode === "fund"
-              ? "Open-source progress starts with people. Help them keep building."
-              : "Bring a community to a repo, a creator, or an idea. Build around e/acc."}
+              ? "Choose a project to view its funding, milestones, and contributor rewards."
+              : "Browse tokens linked to projects and creators. Public launches and trading are not yet available."}
           </p>
         </header>
         <BuilderPath active={mode === "fund" ? "/fund" : "/launch"} />
@@ -144,18 +145,9 @@ function Content({ data, mode }) {
   const p = data.projects.find((p) => p.address === selected);
   return (
     <div className="ev-stack">
-      <details className="workspace-tools">
-        <summary>
-          Project operations <span>Fees, settlement & governance</span>
-        </summary>
-        <div className="ev-stack">
-          <GovernancePanel data={data} />
-          <FeePanel data={data} call={call} enabled={enabled} ata={ata} />
-        </div>
-      </details>
       {mode === "launch" && !data.config.launchEnabled && (
         <section className="ev-card">
-          <h2>Launch integration under verification</h2>
+          <h2>Token launches are not available yet</h2>
           <p>
             Launches are being tested on Devnet. You can explore the model or
             start with repository funding while trading remains disabled.
@@ -164,10 +156,45 @@ function Content({ data, mode }) {
       )}
       <section className="ev-card">
         <h2>
+          {mode === "fund" ? "Choose a project to fund" : "Choose a token project"}
+        </h2>
+        {!data.projects.filter((project) => mode === "fund" || !project.tokenless).length ? (
+          <p>No projects are available in this view yet.</p>
+        ) : (
+          <div className="sol-list">
+            {data.projects
+              .filter((p) => mode === "fund" || !p.tokenless)
+              .map((p) => (
+                <button
+                  key={p.address}
+                  className="sol-project"
+                  aria-pressed={selected === p.address}
+                  onClick={() => setSelected(p.address)}
+                >
+                  {p.name} {p.symbol && `· $${p.symbol}`}
+                  <span>{p.adopted ? "Adopted by project owner" : "Awaiting owner adoption"}</span>
+                </button>
+              ))}
+          </div>
+        )}
+      </section>
+      {p && (
+        <Project
+          p={p}
+          data={data}
+          call={call}
+          transact={transact}
+          enabled={enabled}
+        />
+      )}
+      <section className="ev-card">
+        <h2>
           {mode === "fund"
-            ? "Register an OSS repository"
+            ? "Add a repository for funding"
             : "Launch a community coin"}
         </h2>
+        <p className="sol-note">{mode === "fund" ? "Add a public GitHub repository to create its funding page. Adding it does not verify ownership." : "Create a token linked to a public project or creator when launches become available."} <Link href="/verify">Verify your GitHub role</Link></p>
+        {!account && <p className="sol-note">Connect your Solana wallet above to submit this form.</p>}
         <form
           className="sol-form"
           onSubmit={(e) => {
@@ -286,38 +313,15 @@ function Content({ data, mode }) {
           </p>
         </form>
       </section>
-      <section className="ev-card">
-        <h2>
-          {mode === "fund" ? "Repositories and projects" : "Community launches"}
-        </h2>
-        {!data.projects.length ? (
-          <p>No onchain projects are available.</p>
-        ) : (
-          <div className="sol-list">
-            {data.projects
-              .filter((p) => mode === "fund" || !p.tokenless)
-              .map((p) => (
-                <button
-                  key={p.address}
-                  className="sol-project"
-                  onClick={() => setSelected(p.address)}
-                >
-                  {p.name} {p.symbol && `· $${p.symbol}`}
-                  <span>{p.adopted ? "Owner verified" : "Not adopted"}</span>
-                </button>
-              ))}
-          </div>
-        )}
-      </section>
-      {p && (
-        <Project
-          p={p}
-          data={data}
-          call={call}
-          transact={transact}
-          enabled={enabled}
-        />
-      )}
+      <details className="workspace-tools">
+        <summary>
+          Project operations <span>Fees, settlement & governance</span>
+        </summary>
+        <div className="ev-stack">
+          <GovernancePanel data={data} />
+          <FeePanel data={data} call={call} enabled={enabled} ata={ata} />
+        </div>
+      </details>
     </div>
   );
 }
@@ -379,7 +383,7 @@ function Project({ p, data, call, transact, enabled }) {
             }}
           >
             <Text
-              label="Public adoption terms (publish these in the source repository; verify identity at /verify)"
+              label="Owner adoption terms (publish in the repository before requesting approval)"
               name="terms"
               required
             />
@@ -465,7 +469,7 @@ function Project({ p, data, call, transact, enabled }) {
               }}
             >
               <Field
-                label="SOL sponsorship"
+                label="Funding amount (SOL)"
                 name="amount"
                 type="number"
                 min="0.000000001"
@@ -553,7 +557,7 @@ function Project({ p, data, call, transact, enabled }) {
           </p>
           {m.status === 1 && (
             <EvidenceAction
-              label="Submit completion evidence"
+              label="Submit work for review"
               enabled={
                 enabled &&
                 (m.community
@@ -646,7 +650,7 @@ function Project({ p, data, call, transact, enabled }) {
           )}
           {[1, 2].includes(m.status) && (
             <EvidenceAction
-              label="Challenge decision"
+              label="Dispute a decision"
               enabled={enabled}
               onSubmit={(reason) =>
                 transact("challenge", { reason }, [p.address, m.address])

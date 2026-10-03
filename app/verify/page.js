@@ -13,7 +13,7 @@ export default function Page() {
     <GuidePage
       active="/verify"
       kicker="Identity / provenance"
-      title="Your work. Your identity."
+      title="Verify your GitHub role."
       description="Connect GitHub and your Solana wallet. Verify your role in the repositories you build."
     >
       {ready ? (

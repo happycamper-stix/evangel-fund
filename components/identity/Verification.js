@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Show, SignInButton, UserButton, UserProfile } from "@clerk/nextjs";
 import { useState } from "react";
 export default function Verification() {
@@ -88,6 +89,7 @@ export default function Verification() {
                   This check does not approve adoption or payment. Governance
                   rechecks identity before approval.
                 </p>
+                <p><Link className="ev-link" href="/fund">Continue to projects →</Link></p>
                 <details>
                   <summary>Governance identity reference</summary>
                   <pre>{JSON.stringify(result, null, 2)}</pre>
