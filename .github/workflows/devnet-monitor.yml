@@ -1,6 +1,8 @@
 name: Verify Devnet custody
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "17,47 * * * *"
 permissions:
   contents: read
 concurrency:
@@ -8,6 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   verify:
+    if: github.repository == 'happycamper-stix/evangel'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -15,8 +18,11 @@ jobs:
       EVANGEL_SOLANA_PROGRAM: Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV
       EVANGEL_GOVERNANCE_MULTISIG: 4jiu9tuEWQueXfhPd6HwvVVzpZr2pvVrtrcEyMCb1VMh
       EVANGEL_DEPLOYMENT_BASELINE: docs/DEVNET_ADDRESSES.json
+      EVANGEL_MONITOR_WEB: "true"
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'

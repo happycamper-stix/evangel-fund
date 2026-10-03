@@ -20,6 +20,7 @@ test("Wallet Standard signs an actual SBF launch and swap in isolated LiteSVM", 
     config = {
       configured: true,
       launchEnabled: true,
+      testFixture: true,
       program: f.program,
       cluster: "devnet",
       chain: "solana:devnet",

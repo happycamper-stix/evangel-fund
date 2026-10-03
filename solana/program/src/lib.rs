@@ -21,6 +21,7 @@ mod bpf_loader_upgradeable {
 
 mod fees;
 mod governance;
+mod venue;
 entrypoint!(process_instruction);
 const TOKEN: Pubkey = solana_program::pubkey!("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
 const REAL_EACC: Pubkey = solana_program::pubkey!("CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU");
@@ -273,6 +274,15 @@ pub enum Action {
     SubmitAdoptionCandidate {
         terms: [u8; 32],
     },
+    LaunchVenue {
+        name: String,
+        symbol: String,
+        source: String,
+        sqrt_min: u128,
+        sqrt_max: u128,
+        liquidity: u128,
+    },
+    CollectVenue,
 }
 fn check(ok: bool) -> ProgramResult {
     if ok {
@@ -541,6 +551,31 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
     } else {
         (decoded, false)
     };
+    let venue_params = match &action {
+        Action::LaunchVenue {
+            sqrt_min,
+            sqrt_max,
+            liquidity,
+            ..
+        } => Some((*sqrt_min, *sqrt_max, *liquidity)),
+        _ => None,
+    };
+    let action = if let Action::LaunchVenue {
+        name,
+        symbol,
+        source,
+        ..
+    } = action
+    {
+        Action::Launch {
+            name,
+            symbol,
+            source,
+            virtual_quote: 0,
+        }
+    } else {
+        action
+    };
     let it = &mut accounts.iter();
     let who = next_account_info(it)?;
     signed(who)?;
@@ -570,7 +605,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 && authority != Pubkey::default(),
         )?;
         if governance_multisig == Pubkey::default() {
-            check(cfg!(feature = "test-fixtures"))?;
+            check(cfg!(feature = "venue-candidate") || cfg!(feature = "test-fixtures"))?;
         } else {
             let multisig = next_account_info(it)?;
             check(*multisig.key == governance_multisig)?;
@@ -610,7 +645,11 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
         }
     }
     if matches!(action, Action::Launch { .. } | Action::Swap { .. }) {
-        check(cfg!(feature = "test-fixtures"))?;
+        check(if venue_params.is_some() {
+            cfg!(feature = "venue-adapter") && f.test_mode
+        } else {
+            cfg!(feature = "test-fixtures")
+        })?;
     }
     if matches!(
         action,
@@ -687,8 +726,9 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
                 && symbol.bytes().all(|b| b.is_ascii_uppercase())
                 && source.starts_with("https://")
                 && source.len() <= 512
-                && virtual_quote >= 1_000_000_000
-                && virtual_quote <= 1_000_000_000_000_000_000,
+                && (venue_params.is_some()
+                    || (virtual_quote >= 1_000_000_000
+                        && virtual_quote <= 1_000_000_000_000_000_000)),
         )?;
         let mint = next_account_info(it)?;
         let pool = next_account_info(it)?;
@@ -768,6 +808,13 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             ps,
         )?;
         fees::create_token_vault(pid, who, quote_pool, quote_mint, pa, sys, tp, b"quote-pool")?;
+        if let Some((min, max, liquidity)) = venue_params {
+            venue::initialize(
+                pid, who, pa, mint, pool, quote_mint, quote_pool, sys, tp, it, min, max, liquidity,
+                ps,
+            )?;
+            check(fees::token_balance(reserve)? == RESERVE && fees::token_balance(pool)? == 0)?;
+        }
         let p = Project {
             tag: 2,
             mint: *mint.key,
@@ -778,7 +825,7 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
             adoption_hash: [0; 32],
             adoption_challenged: false,
             virtual_quote,
-            token_reserve: LIQUIDITY,
+            token_reserve: if venue_params.is_some() { 0 } else { LIQUIDITY },
             quote_reserve: 0,
             dev_released: 0,
             worker_released: 0,
@@ -807,6 +854,9 @@ pub fn process_instruction(pid: &Pubkey, accounts: &[AccountInfo], data: &[u8]) 
     let pb = pda(pid, pa, &[b"project", p.mint.as_ref()])?;
     let mint_key = p.mint;
     let ps: &[&[u8]] = &[b"project", mint_key.as_ref(), &[pb]];
+    if matches!(action, Action::CollectVenue) {
+        return venue::collect(pid, pa, &p, &f, it, now, ps);
+    }
     if fees::process(pid, who, pa, &p, &f, &action, it, now)? {
         return Ok(());
     }

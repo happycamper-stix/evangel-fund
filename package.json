@@ -26,7 +26,11 @@
     "solana:settle-days": "node --env-file-if-exists=.env.local scripts/solana/settle-days.mjs",
     "solana:inspect-quote": "node scripts/solana/inspect-quote.mjs",
     "solana:inspect-venue": "node scripts/solana/inspect-venue.mjs",
-    "test:venue": "node --test tests/venue/*.test.mjs"
+    "test:venue": "node --test tests/venue/*.test.mjs",
+    "solana:build:venue": "node scripts/solana/build.mjs --venue-candidate",
+    "test:venue:full": "npm run solana:references && npm run solana:inspect-venue && npm run solana:inspect-venue -- --devnet && npm run solana:build:venue && npm run solana:build:venue:review && npm run test:venue",
+    "solana:build:venue:review": "node scripts/solana/build.mjs --venue-adapter",
+    "solana:collect-fees": "node --env-file-if-exists=.env.local scripts/solana/collect-fees.mjs"
   },
   "dependencies": {
     "@clerk/backend": "^3.21.1",

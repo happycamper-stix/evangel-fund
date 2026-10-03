@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-03T01:05:19.254Z",
+  "sent": 610,
+  "elapsedMs": 13203,
+  "counts": { "400": 600, "429": 10 },
+  "limited": true,
+  "note": "Bounded requests using an unsupported method rejected before backend RPC. No chain transaction."
+}

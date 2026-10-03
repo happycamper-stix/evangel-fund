@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-03T01:02:44.854Z",
+  "cluster": "devnet",
+  "commitment": "finalized",
+  "slot": 506822291,
+  "program": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+  "programData": "AUh8bm2XsMfex3KjYGcM3G4uBqUNSDw6HEhWaWMYnyPH",
+  "loader": "BPFLoaderUpgradeab1e11111111111111111111111",
+  "deployedSlot": "503166267",
+  "upgradeAuthority": "DHLXnJdACTY83yKwnUkeoDjqi4QBbsYGa1v8tJL76ViX",
+  "binarySha256": "82bb9375921bb8007551cb65f9ca43b191597496cc9922926468b36671081ec2",
+  "binaryLength": 1559448,
+  "sourceRevision": null,
+  "sourceBinaryEquivalenceVerified": false,
+  "adapterEnabled": false
+}

@@ -1,3 +1,4 @@
+import { feeDayDust } from "../../lib/solana/fee-policy.mjs";
 import { verifyProgramBytes } from "../../lib/solana/program-integrity.mjs";
 import { NETWORK, ROOT } from "./runtime.mjs";
 // Read-only development-network invariant monitor. Scheduling and notifications are deliberately separate.
@@ -11,6 +12,27 @@ import { pda, pub } from "../../lib/solana/program.mjs";
 const alerts = [];
 try {
   const snapshot = await state();
+  if (process.env.EVANGEL_MONITOR_WEB === "true") {
+    const response = await fetch("https://evangel.fund/api/solana/state", {
+      signal: AbortSignal.timeout(15000),
+      cache: "no-store",
+    });
+    if (!response.ok)
+      alerts.push({
+        issue: "Public state endpoint unavailable",
+        status: response.status,
+      });
+    else {
+      const live = await response.json();
+      if (
+        live.config?.program !== snapshot.config.program ||
+        live.config?.cluster !== NETWORK.cluster
+      )
+        alerts.push({
+          issue: "Website deployment differs from monitored cluster/program",
+        });
+    }
+  }
   if (!snapshot.factory) {
     console.log(
       JSON.stringify({
@@ -75,9 +97,7 @@ try {
     ].reduce((n, k) => n + BigInt(d[k]), 0n);
     if (!d.settled) {
       const fees = BigInt(d.fees);
-      liabilities +=
-        fees -
-        [60n, 10n, 27n, 3n].reduce((sum, w) => sum + (fees * w) / 100n, 0n);
+      liabilities += feeDayDust(fees, d.policy);
     }
     const workCommitted = snapshot.milestones
       .filter(

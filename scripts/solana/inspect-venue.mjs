@@ -4,13 +4,23 @@ import { createHash } from "node:crypto";
 import { getAddressDecoder } from "@solana/kit";
 import { DAMM_V2 } from "../../lib/solana/venue-policy.mjs";
 import { LOADER, pda, pub } from "../../lib/solana/program.mjs";
+const devnet = process.argv.includes("--devnet");
+const cluster = devnet ? "devnet" : "mainnet-beta";
+const reportPath = devnet
+  ? "docs/DAMM_DEVNET_INSPECTION.json"
+  : "docs/DAMM_VENUE_INSPECTION.json";
 async function rpc(method, params = []) {
-  const response = await fetch("https://api.mainnet-beta.solana.com", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-    signal: AbortSignal.timeout(20000),
-  });
+  const response = await fetch(
+    devnet
+      ? "https://api.devnet.solana.com"
+      : "https://api.mainnet-beta.solana.com",
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+      signal: AbortSignal.timeout(20000),
+    },
+  );
   const body = await response.json();
   if (!response.ok || body.error || body.result === undefined)
     throw Error("Venue reference RPC unavailable");
@@ -18,7 +28,9 @@ async function rpc(method, params = []) {
 }
 if (
   (await rpc("getGenesisHash")) !==
-  "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d"
+  (devnet
+    ? "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG"
+    : "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d")
 )
   throw Error("Wrong reference cluster");
 const programData = await pda(LOADER, pub(DAMM_V2.program));
@@ -52,7 +64,7 @@ if (binary.subarray(0, 4).toString("hex") !== "7f454c46")
   throw Error("Missing ELF executable");
 const report = {
   observedAt: new Date().toISOString(),
-  cluster: "mainnet-beta",
+  cluster,
   commitment: "finalized",
   slot: result.context.slot,
   program: DAMM_V2.program,
@@ -63,14 +75,12 @@ const report = {
     d[12] === 1 ? getAddressDecoder().decode(d.subarray(13, 45)) : null,
   binarySha256: createHash("sha256").update(binary).digest("hex"),
   binaryLength: binary.length,
-  sourceRevision: DAMM_V2.revision,
+  sourceRevision: devnet ? null : DAMM_V2.revision,
   sourceBinaryEquivalenceVerified: false,
   adapterEnabled: false,
 };
 if (!process.argv.includes("--observe")) {
-  const pinned = JSON.parse(
-    await readFile("docs/DAMM_VENUE_INSPECTION.json", "utf8"),
-  );
+  const pinned = JSON.parse(await readFile(reportPath, "utf8"));
   if (
     report.binarySha256 !== pinned.binarySha256 ||
     report.program !== pinned.program ||
@@ -86,8 +96,5 @@ await writeFile(
   binary,
 );
 if (process.argv.includes("--observe"))
-  await writeFile(
-    "docs/DAMM_VENUE_INSPECTION.json",
-    JSON.stringify(report, null, 2) + "\n",
-  );
+  await writeFile(reportPath, JSON.stringify(report, null, 2) + "\n");
 console.log(JSON.stringify(report, null, 2));

@@ -1,0 +1,31 @@
+{
+  "status": "review candidate; not deployed; public trading disabled",
+  "implementationCommit": "68df6f34d4ce1d764268c2c1bd8c610e3ed05516",
+  "version": 3,
+  "testFixtures": false,
+  "venueCandidate": false,
+  "venueAdapter": true,
+  "binarySha256": "49102274ce55037729f198fb628b2cf84e5a43589750f429acc0c25a36739900",
+  "binaryLength": 261248,
+  "deployedDevnetBinarySha256": "7b9aa4d9b1aafe979fdfb7137d6106c8f70378e65040538b50df045f83d57382",
+  "validation": {
+    "unitAndIntegrationTests": 65,
+    "observedVenueTests": 12,
+    "browserTests": 48,
+    "npmAuditVulnerabilities": 0,
+    "rustWarning": "RUSTSEC-2025-0141: bincode unmaintained",
+    "liveRateLimit": "600 rejected-method responses followed by 10 HTTP 429; no backend RPC",
+    "liveIdentity": "unrelated repository role not established; correct owner restored",
+    "devnetAndWebsiteMonitor": "passed, zero alerts",
+    "mainnetVenueSourceBinaryEquivalence": "verified by pinned Linux build; DAMM_VERIFIED_BUILD.json",
+    "scheduledMonitorWorkflow": "passed: https://github.com/happycamper-stix/evangel/actions/runs/37085320632"
+  },
+  "releaseGates": [
+    "Reviewed upgrade, actual independent Squads signatures and timelock",
+    "Public Devnet launch, trade, collection and settlement receipts",
+    "Real participant adoption, sponsorship, payout, challenge and reopening",
+    "Deployment-bound public signing and sponsored-dust service acceptance",
+    "Scheduled collection and notification/recovery drills",
+    "Separately authorized capped mainnet release"
+  ]
+}

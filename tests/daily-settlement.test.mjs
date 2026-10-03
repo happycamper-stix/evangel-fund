@@ -37,3 +37,25 @@ test("keeper plans overdue project-specific payouts without consuming unpaid exp
   );
   assert.throws(() => dailySettlementPlan(snapshot, null));
 });
+
+test("venue fee days use net-receipt weights and reject unknown policies", () => {
+  const snapshot = {
+    projects: [{ address: "p", owner: "o", adopted: true }],
+    feeDays: [
+      {
+        address: "d",
+        project: "p",
+        day: "1",
+        fees: "100",
+        development: "63",
+        governance: "15",
+        expenseCommitted: "5",
+        settled: false,
+        policy: 1,
+      },
+    ],
+  };
+  assert.equal(dailySettlementPlan(snapshot, 172800)[0].developmentClaim, "80");
+  snapshot.feeDays[0].policy = 2;
+  assert.throws(() => dailySettlementPlan(snapshot, 172800), /Unknown/);
+});

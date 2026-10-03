@@ -16,6 +16,7 @@ pub struct FeeDay {
     pub expense_approved: u64,
     pub foundation: u64,
     pub settled: bool,
+    pub policy: u8, // 0 legacy fixture, 1 authenticated net venue receipts.
 }
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct Expense {
@@ -28,9 +29,13 @@ pub struct Expense {
     pub status: u8, // 0 committed, 1 paid, 2 canceled
 }
 pub fn validate_mint(mint: &AccountInfo, f: &Factory) -> ProgramResult {
-    check(*mint.key == f.quote_mint && *mint.owner == TOKEN && mint.data_len() == 82)?;
+    check(*mint.key == f.quote_mint && *mint.owner == TOKEN && mint.data_len() >= 82)?;
+    if mint.data_len() != 82 {
+        check(cfg!(feature = "venue-adapter"))?;
+        venue::metadata_mint(mint)?;
+    }
     let d = mint.try_borrow_data()?;
-    // Unsupported extensions fail closed until explicitly reviewed. No mint/freeze authorities.
+    // No mint/freeze authorities; candidate allows only immutable metadata extensions.
     check(d[..4] == [0; 4] && d[44] == 6 && d[45] == 1 && d[46..50] == [0; 4])
 }
 pub fn token_balance(a: &AccountInfo) -> Result<u64, ProgramError> {
@@ -87,7 +92,28 @@ pub fn vault(pid: &Pubkey, a: &AccountInfo, da: &AccountInfo, f: &Factory) -> Pr
     token_account(a, &f.quote_mint, da.key)?;
     check(a.data_len() == 165)
 }
+pub fn allocate_venue(d: &mut FeeDay, fee: u64) -> ProgramResult {
+    check(d.policy == 1 && !d.settled)?;
+    let next = d
+        .fees
+        .checked_add(fee)
+        .ok_or(ProgramError::ArithmeticOverflow)?;
+    for (budget, weight) in [
+        (&mut d.development, 255u128),
+        (&mut d.community, 50),
+        (&mut d.governance, 80),
+        (&mut d.foundation, 15),
+    ] {
+        let increment = next as u128 * weight / 400 - d.fees as u128 * weight / 400;
+        *budget = budget
+            .checked_add(increment as u64)
+            .ok_or(ProgramError::ArithmeticOverflow)?;
+    }
+    d.fees = next;
+    Ok(())
+}
 pub fn allocate(d: &mut FeeDay, fee: u64) -> ProgramResult {
+    check(d.policy == 0 && !d.settled)?;
     let next = d
         .fees
         .checked_add(fee)
@@ -197,6 +223,7 @@ pub fn process<'a, 'b>(
                 expense_approved: 0,
                 foundation: 0,
                 settled: false,
+                policy: if p.virtual_quote == 0 { 1 } else { 0 },
             },
         )?;
         return Ok(true);
@@ -205,9 +232,15 @@ pub fn process<'a, 'b>(
     match action {
         Action::SettleFeeDay { .. } => {
             check(!d.settled && day < now.div_euclid(DAY))?;
-            let allocated: u128 = [60u128, 10, 27, 3]
+            check(d.policy <= 1)?;
+            let (weights, denominator) = if d.policy == 1 {
+                ([255u128, 50, 80, 15], 400)
+            } else {
+                ([60u128, 10, 27, 3], 100)
+            };
+            let allocated: u128 = weights
                 .iter()
-                .map(|w| d.fees as u128 * w / 100)
+                .map(|w| d.fees as u128 * w / denominator)
                 .sum();
             let dust = d.fees - (allocated as u64);
             let surplus = d

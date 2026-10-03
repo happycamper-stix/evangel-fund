@@ -1,0 +1,15 @@
+{
+  "sourceRevision": "a85c926607433f23f0ea60f4ca7b1ae92f4156cb",
+  "buildCommand": "cargo-build-sbf --manifest-path programs/cp-amm/Cargo.toml --jobs 2",
+  "toolchain": "Agave 3.1.10, platform tools v1.52",
+  "sourceWorkingTreeClean": true,
+  "buildSha256": "64cec1450e2ec309b79d55709dbafb153900242755db13e4e3b3c19440d6b129",
+  "buildLength": 1433936,
+  "observedMainnetSha256": "4d5b920baebc090f89b2e8796a3452ed067c9667a143058c96a312f2c1e6848b",
+  "prefixMatches": false,
+  "remainingAllocationZero": true,
+  "sourceBinaryEquivalenceVerified": false,
+  "verificationService": "https://verify.osec.io/status/cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+  "verificationServiceReportedVerified": false,
+  "limitation": "Local macOS build is not the documented reproducible Linux/container build; mismatch does not by itself establish incorrect source. Exact deployed-source provenance remains a release gate."
+}

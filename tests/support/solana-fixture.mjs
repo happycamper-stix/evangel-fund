@@ -14,10 +14,14 @@ import {
   getTransferSolInstruction,
 } from "@solana-program/system";
 import {
+  getInitializeMetadataPointerInstruction,
+  getInitializeTokenMetadataInstruction,
+  getUpdateTokenMetadataUpdateAuthorityInstruction,
   getInitializeAccount3Instruction,
   getTokenDecoder,
   getMintDecoder,
   getMintToCheckedInstruction,
+  getTransferCheckedInstruction,
   getFreezeAccountInstruction,
   getInitializeMint2Instruction,
   getSetAuthorityInstruction,
@@ -36,7 +40,15 @@ import {
   feeDayAddresses,
 } from "../../lib/solana/program.mjs";
 export const HASH = await sha256("fixture terms and report");
-export async function setup({ prefund = false, quorum = false } = {}) {
+export async function setup({
+  prefund = false,
+  quorum = false,
+  venue = false,
+  metadata = false,
+  underfund = false,
+  venueCluster = "mainnet-beta",
+  venueRelease = false,
+} = {}) {
   const svm = new LiteSVM(),
     owner = await generateKeyPairSigner(),
     worker = await generateKeyPairSigner(),
@@ -45,7 +57,15 @@ export async function setup({ prefund = false, quorum = false } = {}) {
   svm.airdrop(worker.address, 10_000_000_000n);
   svm.addProgram(
     program,
-    new Uint8Array(await readFile(".evangel/test-programs/evangel_factory.so")),
+    new Uint8Array(
+      await readFile(
+        venueRelease
+          ? ".evangel/venue-release/evangel_factory.so"
+          : venue
+            ? ".evangel/venue-programs/evangel_factory.so"
+            : ".evangel/test-programs/evangel_factory.so",
+      ),
+    ),
   );
   // Model only deployment metadata: the VM loads the actual SBF, then assigns its upgrade authority.
   const pd = await pda(LOADER, pub(program)),
@@ -65,7 +85,18 @@ export async function setup({ prefund = false, quorum = false } = {}) {
     );
     msg = svm.setTransactionMessageLifetimeUsingLatestBlockhash(msg);
     msg = appendTransactionMessageInstructions(
-      Array.isArray(ix) ? ix : [ix],
+      [
+        ...(venue
+          ? [
+              {
+                programAddress: "ComputeBudget111111111111111111111111111111",
+                data: Uint8Array.of(2, 128, 26, 6, 0),
+                accounts: [],
+              },
+            ]
+          : []),
+        ...(Array.isArray(ix) ? ix : [ix]),
+      ],
       msg,
     );
     const tx = await signTransactionMessageWithSigners(msg);
@@ -121,16 +152,31 @@ export async function setup({ prefund = false, quorum = false } = {}) {
         currentDay.feeDay,
         currentDay.feeVault,
       ];
-    return instruction(program, name, args, [who.address, fa, ...acc], [who]);
+    return instruction(
+      program,
+      name,
+      args,
+      [who.address, fa, ...acc],
+      [who, ...(name === "launchVenue" ? [worker] : [])],
+    );
   };
   await send([
     getCreateAccountInstruction({
       payer: owner,
       newAccount: quoteSigner,
-      lamports: svm.minimumBalanceForRentExemption(82n),
-      space: 82n,
+      lamports: svm.minimumBalanceForRentExemption(metadata ? 1024n : 82n),
+      space: metadata ? 234n : 82n,
       programAddress: TOKEN,
     }),
+    ...(metadata
+      ? [
+          getInitializeMetadataPointerInstruction({
+            mint: quoteMint,
+            authority: null,
+            metadataAddress: quoteMint,
+          }),
+        ]
+      : []),
     getInitializeMint2Instruction({
       mint: quoteMint,
       decimals: 6,
@@ -138,6 +184,23 @@ export async function setup({ prefund = false, quorum = false } = {}) {
       freezeAuthority: null,
     }),
   ]);
+  if (metadata)
+    await send([
+      getInitializeTokenMetadataInstruction({
+        metadata: quoteMint,
+        updateAuthority: owner.address,
+        mint: quoteMint,
+        mintAuthority: owner,
+        name: "Quote fixture",
+        symbol: "QUOTE",
+        uri: "https://example.com/quote",
+      }),
+      getUpdateTokenMetadataUpdateAuthorityInstruction({
+        metadata: quoteMint,
+        updateAuthority: owner,
+        newUpdateAuthority: null,
+      }),
+    ]);
   async function makeToken(who, mint) {
     const account = await generateKeyPairSigner();
     await send([
@@ -200,14 +263,79 @@ export async function setup({ prefund = false, quorum = false } = {}) {
         }),
         worker,
       );
-  await send(
+  let venueAccounts = [],
+    venuePlan,
+    sponsorQuote;
+  if (venue) {
+    sponsorQuote = await makeToken(worker, quoteMint);
+    await send(
+      getTransferCheckedInstruction({
+        source: quoteToken,
+        mint: quoteMint,
+        destination: sponsorQuote,
+        authority: owner,
+        amount: 100n,
+        decimals: 6,
+      }),
+    );
+    const { DAMM_V2 } = await import("../../lib/solana/venue-policy.mjs");
+    const { planOneSidedLaunch, venueAddresses } =
+      await import("../../lib/solana/damm-plan.mjs");
+    const { createHash } = await import("node:crypto");
+    const observed = JSON.parse(
+      await readFile(
+        venueCluster === "devnet"
+          ? "docs/DAMM_DEVNET_INSPECTION.json"
+          : "docs/DAMM_VENUE_INSPECTION.json",
+        "utf8",
+      ),
+    );
+    const hash = observed.binarySha256;
+    const binary = await readFile(`.evangel/references/damm-v2-${hash}.so`);
+    assert.equal(createHash("sha256").update(binary).digest("hex"), hash);
+    svm.addProgram(DAMM_V2.program, new Uint8Array(binary));
+    // Match observed deployment metadata; executable bytes are hash-checked above.
+    const venueData = await pda(LOADER, pub(DAMM_V2.program));
+    const va = svm.getAccount(venueData),
+      vd = new Uint8Array(va.data);
+    new DataView(vd.buffer).setBigUint64(
+      4,
+      BigInt(observed.deployedSlot),
+      true,
+    );
+    vd[12] = 1;
+    vd.set(pub(observed.upgradeAuthority), 13);
+    svm.setAccount({ ...va, data: vd });
+    const nft = await pda(program, "venue-nft", pub(keys.project));
+    const a = await venueAddresses(keys.mint, quoteMint, nft);
+    venueAccounts = [
+      DAMM_V2.program,
+      a.poolAuthority,
+      a.pool,
+      a.position,
+      nft,
+      a.positionNftAccount,
+      a.baseVault,
+      a.quoteVault,
+      a.eventAuthority,
+      venueData,
+    ];
+    venuePlan = planOneSidedLaunch({ sqrtMin: 1n << 64n, sqrtMax: 2n << 64n });
+  }
+  const launchResult = await send(
     call(
-      "launch",
+      venue ? "launchVenue" : "launch",
       {
         name: "OSS work",
         symbol: "WORK",
         source: "https://github.com/example/oss",
         virtualQuote: 1_000_000_000n,
+        ...(venue
+          ? {
+              ...venuePlan,
+              liquidity: venuePlan.liquidity - (underfund ? 2n << 64n : 0n),
+            }
+          : {}),
       },
       [
         keys.project,
@@ -218,9 +346,14 @@ export async function setup({ prefund = false, quorum = false } = {}) {
         TOKEN,
         quoteMint,
         keys.quotePool,
+        ...(venue ? [worker.address, sponsorQuote, ...venueAccounts] : []),
       ],
     ),
+    owner,
+    underfund,
   );
+  if (underfund)
+    return { svm, keys, launchResult, fa, quoteToken, sponsorQuote };
   async function initDay() {
     const day = svm.getClock().unixTimestamp / 86400n;
     currentDay = {
@@ -350,6 +483,8 @@ export async function setup({ prefund = false, quorum = false } = {}) {
   }
   return {
     svm,
+    venueAccounts,
+    sponsorQuote,
     initDay,
     governanceMultisig,
     authority,

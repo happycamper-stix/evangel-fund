@@ -11,6 +11,7 @@
   "binarySha256": "4d5b920baebc090f89b2e8796a3452ed067c9667a143058c96a312f2c1e6848b",
   "binaryLength": 2174352,
   "sourceRevision": "a85c926607433f23f0ea60f4ca7b1ae92f4156cb",
-  "sourceBinaryEquivalenceVerified": false,
-  "adapterEnabled": false
+  "sourceBinaryEquivalenceVerified": true,
+  "adapterEnabled": false,
+  "verificationEvidence": "DAMM_VERIFIED_BUILD.json"
 }

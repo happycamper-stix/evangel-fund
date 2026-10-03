@@ -39,6 +39,7 @@ const build = JSON.parse(
 if (
   build.version !== 3 ||
   build.testFixtures ||
+  build.venueCandidate !== false ||
   build.binarySha256 !== createHash("sha256").update(binary).digest("hex")
 )
   throw Error("Deploy only the verified custody build, never test fixtures");

@@ -9,6 +9,8 @@ crate-type = ["cdylib"]
 [features]
 default = []
 test-fixtures = []
+venue-adapter = []
+venue-candidate = ["venue-adapter"]
 
 [dependencies]
 solana-program = "=5.1.0"

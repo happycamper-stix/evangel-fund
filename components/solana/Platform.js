@@ -117,6 +117,9 @@ export default function Platform({ mode, config }) {
   );
 }
 function Content({ data, mode }) {
+  // Legacy curve controls exist only for the isolated development browser fixture.
+  const fixtureTrading =
+    process.env.NODE_ENV === "development" && data.config.testFixture === true;
   const { account, busy, run, send } = useSolana(),
     [selected, setSelected] = useState("");
   const enabled = Boolean(
@@ -190,8 +193,10 @@ function Content({ data, mode }) {
                 ]);
                 setSelected(project);
               } else {
-                if (!data.config.launchEnabled)
-                  throw Error("Launch integration is not enabled");
+                if (!data.config.launchEnabled || !fixtureTrading)
+                  throw Error(
+                    "Reviewed venue launch and sponsorship are not enabled.",
+                  );
                 const keys = await launchAddresses(
                   program,
                   account,
@@ -233,15 +238,17 @@ function Content({ data, mode }) {
                 pattern="[a-zA-Z]{1,12}"
                 maxLength={12}
               />
-              <Field
-                label="Virtual starting e/acc (sets price; not a deposit)"
-                name="virtual"
-                type="number"
-                min="1000"
-                step="any"
-                defaultValue="1000"
-                required
-              />
+              {fixtureTrading && (
+                <Field
+                  label="Virtual starting e/acc (local test fixture)"
+                  name="virtual"
+                  type="number"
+                  min="1000"
+                  step="any"
+                  defaultValue="1000"
+                  required
+                />
+              )}
             </>
           )}
           <Field
@@ -258,7 +265,9 @@ function Content({ data, mode }) {
           <button
             className="ev-button"
             disabled={
-              !enabled || (mode === "launch" && !data.config.launchEnabled)
+              !enabled ||
+              (mode === "launch" &&
+                (!data.config.launchEnabled || !fixtureTrading))
             }
           >
             {mode === "fund" ? "Register repository" : "Create coin"}
@@ -823,6 +832,16 @@ function MilestoneForm({ p, data, call, enabled }) {
 function Trade({ p, data, call, enabled }) {
   const [buy, setBuy] = useState(true),
     [value, setValue] = useState("");
+  if (
+    process.env.NODE_ENV !== "development" ||
+    data.config.testFixture !== true
+  )
+    return (
+      <p className="sol-note">
+        Venue trading will be available after the reviewed deployment and public
+        pilot.
+      </p>
+    );
   let preview;
   try {
     preview = quote(p, buy, units(value, 6));

@@ -97,7 +97,7 @@
         "title": "Agree the work",
         "paragraphs": [
           "The repo owner proposes a reward, submission deadline and immutable milestone document containing objective, acceptanceCriteria, ossImpact and evidenceRequired. Publish it at a GitHub blob URL pinned to a full commit. The onchain SHA-256 must match its exact text.",
-          "The governance agent assesses feasibility, measurable acceptance criteria, budget and benefit to the repository’s OSS field. Reject malice, fraud, unrelated work, duplicate compensation and hidden related-party recipients. Missing evidence requires abstention. Plan approval locks budget but never authorizes payment."
+          "The governance agent assesses feasibility, measurable acceptance criteria, budget and benefit to the repository\u2019s OSS field. Reject malice, fraud, unrelated work, duplicate compensation and hidden related-party recipients. Missing evidence requires abstention. Plan approval locks budget but never authorizes payment."
         ]
       },
       {
@@ -150,7 +150,7 @@
       {
         "title": "Daily governance surplus",
         "paragraphs": [
-          "Venue fees count toward the UTC day Evangel actually collects them. Delayed collections do not reopen earlier days. Each project and UTC collection day has a separate e/acc token vault. At daily close, unused governance fees and allocation dust become that same project’s development balance. Approved unpaid expenses remain reserved. No other project can receive the surplus. Closing twice fails; late settlement remains callable.",
+          "Venue fees count toward the UTC day Evangel actually collects them. Delayed collections do not reopen earlier days. Each project and UTC collection day has a separate e/acc token vault. At daily close, unused governance fees and allocation dust become that same project\u2019s development balance. Approved unpaid expenses remain reserved. No other project can receive the surplus. Closing twice fails; late settlement remains callable.",
           "A keeper submits settlement and development payout together after midnight UTC. Programs do not wake themselves up. The runner is implemented; an active funded scheduler and verified deployment are operational prerequisites, not implied by local tests."
         ]
       },
@@ -158,7 +158,7 @@
         "title": "Expenses and quorum timing",
         "paragraphs": [
           "An incurred inference/API invoice is proposed for a future reimbursement booking day so the Squads two-day delay can elapse. Only fees available on the execution day can be reserved; the service date may be earlier. The operator fronts costs. Missing the booking day needs a new proposal, and insufficient fees may leave costs unreimbursed. Merely submitting an invoice does not reserve funds or delay daily surplus.",
-          "Approval binds invoice identity, project, quote mint, base-unit amount and evidence. The test pilot caps approvals at 100 dummy quote tokens per project UTC day. Payment waits a further two-day notice and goes only to the governance vault. Canceling an unpaid expense returns it to that day’s governance budget before close, or development after close. Paid or canceled invoices cannot be charged again. Paying fiat vendors remains an accountable offchain duty."
+          "Approval binds invoice identity, project, quote mint, base-unit amount and evidence. The test pilot caps approvals at 100 dummy quote tokens per project UTC day. Payment waits a further two-day notice and goes only to the governance vault. Canceling an unpaid expense returns it to that day\u2019s governance budget before close, or development after close. Paid or canceled invoices cannot be charged again. Paying fiat vendors remains an accountable offchain duty."
         ]
       },
       {
@@ -353,7 +353,7 @@
   {
     "slug": "internal-security-review",
     "title": "Internal security review",
-    "summary": "First-party findings, verification and outstanding release blockers — October 2, 2026.",
+    "summary": "First-party findings, verification and outstanding release blockers \u2014 October 2, 2026.",
     "sections": [
       {
         "title": "First-party review, not independent certification",
@@ -366,7 +366,7 @@
         "title": "Open findings",
         "paragraphs": [
           "EV-01 (medium): an unverified pending adopter can block another adoption request until governance rejects it. Repeated contention can delay onboarding; it does not grant withdrawal rights. This behavior is reproduced in local compiled-program tests. A local candidate now supports immutable wallet-signed adoption terms and quorum selection despite a pending claimant; the deployed program still needs a reviewed upgrade.",
-          "EV-02 (medium): public state/RPC endpoints need aggregate shared request limits to reduce service-exhaustion and provider-cost risk. EV-05 (informational): upstream bincode 1.3.3 is flagged as unmaintained. An aggregate Vercel rule is now published at 600 requests/minute; live threshold testing and alerting remain outstanding."
+          "EV-02 (medium): the aggregate 600 requests/minute rule passed a controlled live threshold test; notification delivery and sustained capacity checks remain open. EV-05 (informational): upstream bincode 1.3.3 remains unmaintained. EV-07 is resolved for the observed mainnet venue: the digest-pinned Linux build exactly matches its executable. Future upgrades require new verification."
         ]
       },
       {
@@ -379,7 +379,7 @@
       {
         "title": "Not completed by this report",
         "paragraphs": [
-          "Production identity acceptance, the real participant pilot, the DAMM adapter, live fee collection and mainnet trading remain incomplete. Public launches are disabled. The 5% fee split and collection-day allocation are tested models; the historical Rust fixture is not the new trading adapter.",
+          "The real participant pilot, reviewed adapter deployment, public-chain fee receipts and mainnet trading remain incomplete. Public launches are disabled. A local Rust adapter now passes real-venue-binary integration tests; that does not make it a deployed or independently audited product.",
           "Two reviewers can collude or approve an upgrade. Reports cannot prove useful work or honest invoices. Each material change requires a new review and regression evidence."
         ]
       },
@@ -398,6 +398,27 @@
             "href": "/internal-security-review.md",
             "label": "Full review and pilot addendum"
           }
+        ]
+      },
+      {
+        "title": "Venue adapter continuation",
+        "paragraphs": [
+          "Source 68df6f3 adds atomic launch and permanent position custody, exact reserve separation, separate dust sponsorship, authenticated fee collection and collection-day settlement. A governance-enforcing review build remains separate from local test fixtures.",
+          "65 unit/integration tests, 12 actual venue-binary tests and 48 browser checks pass. Mainnet and Devnet venue binaries are executed locally with dummy assets. No public-chain launch receipt or mainnet approval is implied.",
+          "The live API threshold test returned 600 normal rejections followed by 10 HTTP 429 responses. Read-only custody and website monitoring is scheduled every 30 minutes in the private repository. Notification and recovery drills remain outstanding."
+        ],
+        "links": [
+          {
+            "href": "/internal-security-review.md",
+            "label": "Full findings and evidence"
+          }
+        ]
+      },
+      {
+        "title": "Verified venue source",
+        "paragraphs": [
+          "The pinned Linux build of Meteora source a85c926 exactly matches the observed mainnet executable, with only zero allocation padding. The result was independently compared locally after downloading the workflow artifact. This closes EV-07 for that binary, not for future upgrades.",
+          "This is build provenance, not an independent security audit. The adapter remains a local review candidate until real governance deployment and participant acceptance complete."
         ]
       }
     ]
