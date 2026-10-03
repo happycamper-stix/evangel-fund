@@ -18,7 +18,7 @@ Evidence: `VENUE_ADAPTER_CANDIDATE.json`, `LIVE_RATE_LIMIT_CHECK.json`, `DAMM_AD
 ## Remaining gates, in order
 
 1. **Fresh provenance check:** the digest-pinned Linux build now matches the observed mainnet venue. Recheck it immediately before launch; the venue remains upgradeable, so a new deployment invalidates prior evidence.
-2. **Reviewed deployment:** independently inspect the adapter review artifact and adoption hardening, upload a reviewed upgrade buffer, and obtain actual 2-of-3 Squads approval plus the real two-day delay. Verify finalized deployed bytes before updating the baseline. No upgrade has been submitted or signed in this work.
+2. **Reviewed deployment:** independently inspect the adapter review artifact and adoption hardening, obtain actual 2-of-3 Squads approval plus the real two-day delay. Verify finalized deployed bytes before updating the baseline. The exact buffer is staged under Squads authority, program capacity has been extended without changing executable bytes, and the unsigned upgrade simulation passes. No upgrade proposal or approval has been submitted; the two-day clock has not started. See DEVNET_UPGRADE_PREPARATION.json and DEVNET_UPGRADE_RUNBOOK.md.
 3. **Real participants:** owner signs the prepared tokenless adoption terms; reviewers evaluate and approve. Complete real sponsorship/refund, payroll, challenge and failed-work reopening, including actual notice periods. See PILOT_RUNBOOK.md. Local VM clock advancement cannot replace these receipts.
 4. **Public venue acceptance:** launch a dummy-quote project on Devnet, execute buys/sells, collect on two different days and settle to actual fixed recipients. Bind the public launch/trade UI and sponsored-dust signer service to that accepted deployment; do not reuse the legacy virtual-curve UI or expose a signing secret to browsers.
 5. **Operations:** exercise collection/settlement retries and bounded signer funding, actual revoked-repository access, alert delivery and recovery. Monitoring is scheduled; fee collection is not yet a running service. No notifications to outside reviewers were sent.
@@ -27,3 +27,7 @@ Evidence: `VENUE_ADAPTER_CANDIDATE.json`, `LIVE_RATE_LIMIT_CHECK.json`, `DAMM_AD
 ## Immediate owner action
 
 Use the public repository and wallet already verified at `https://evangel.fund/verify`. At `/fund`, select the registered Evangel repository and submit the exact `PILOT_ADOPTION_TERMS.json` text through Phantom on Devnet. The signing wallet must be `92DFCXk28gwHZLzKoBzKj7tCeLZk3EtEdi5WaLBARjHc`. An account login is not an onchain adoption signature. The configured independent reviewers must sign their own approvals; the operator cannot substitute for them.
+
+## Latest gate execution
+
+Gate 1 passed: both observed venue executables still match their pinned hashes. Gate 2 preparation is complete: verified buffer, finalized capacity extension, unchanged deployed code and authority, and a successful unsigned Devnet upgrade simulation. The local suite now passes 68 tests, including loader and real-Squads upgrade-path tests. Actual member proposal creation, two approvals, and the onchain delay remain required before continuing to gate 3. Vault funding credited during preparation remains available in the vault; see the public preparation receipt for amounts.

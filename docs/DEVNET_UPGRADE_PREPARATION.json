@@ -1,0 +1,79 @@
+{
+  "observedAt": "2026-10-03T01:45:45.164Z",
+  "cluster": "devnet",
+  "status": "buffer verified and controlled by Squads; member proposals and signatures pending",
+  "program": "Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV",
+  "programData": "ABQ64bHGBXktfNAysjBmUNWDsLnCooDGriui76hFXXo3",
+  "multisig": "4jiu9tuEWQueXfhPd6HwvVVzpZr2pvVrtrcEyMCb1VMh",
+  "vault": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy",
+  "currentTransactionIndex": "0",
+  "threshold": 2,
+  "timelockSeconds": 172800,
+  "buffer": "ESDqAzxyYGtaqQsxfPRhYTLSPU9g5v3WSno2J4XHoK5T",
+  "bufferVerified": true,
+  "binarySha256": "49102274ce55037729f198fb628b2cf84e5a43589750f429acc0c25a36739900",
+  "binaryLength": 261248,
+  "additionalBytes": 0,
+  "extensionRentLamports": 0,
+  "vaultBalanceLamports": 206491840,
+  "refundRecipient": "HJQv3jt9yMhxhKkUyzN1Csj3w3FxJ2ASfU9q8C26RDpb",
+  "topLevelPreparation": null,
+  "actions": [
+    {
+      "name": "Upgrade",
+      "programAddress": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "accounts": [
+        {
+          "address": "ABQ64bHGBXktfNAysjBmUNWDsLnCooDGriui76hFXXo3",
+          "role": 1
+        },
+        {
+          "address": "Ac4F5CNu8tYdUx4RZTKRchFyj5nZ9wG12eh3zDVJn7LV",
+          "role": 1
+        },
+        {
+          "address": "ESDqAzxyYGtaqQsxfPRhYTLSPU9g5v3WSno2J4XHoK5T",
+          "role": 1
+        },
+        {
+          "address": "HJQv3jt9yMhxhKkUyzN1Csj3w3FxJ2ASfU9q8C26RDpb",
+          "role": 1
+        },
+        {
+          "address": "SysvarRent111111111111111111111111111111111",
+          "role": 0
+        },
+        {
+          "address": "SysvarC1ock11111111111111111111111111111111",
+          "role": 0
+        },
+        {
+          "address": "GqMSNe6TuhP1KgZontrDAhr4JCwe7FohiRHDBMUFuURy",
+          "role": 2
+        }
+      ],
+      "dataHex": "03000000"
+    }
+  ],
+  "note": "Unsigned upgrade instruction, not a submitted proposal. Complete any top-level capacity preparation first. The upgrade requires real member creation, two approvals, and its timelock. Recheck state/index and exact buffer immediately before signing. Do not change the deployed baseline until finalized upgrade bytes match.",
+  "receipts": {
+    "bufferAuthorityTransfer": "z7auruN441jbzdirsEyzPkG4iz6gGbMuRdKA5wrYczNpbR4VqXtpwM4GkFwYi1tZHc1k35XZ8RCfRHxRXz2WxtC",
+    "capacityExtension": "2T9YcrogNDpqyrNQBQqu2Ry8YrE2fWGQPMmvKJEV76T5FKXW4VRJakYAf5bAvXJ3cDByCVdxFz53mtGwpj5ELqr",
+    "vaultFundingCredit": "4zN1Ad1hNxuvbWpJZGgwUZA7RVpNmDf65XoHA2MCzPTWsFsfQDvwkcXYAQ1EiG5xco4dbsTKAb8iUNcCvGY45sW1"
+  },
+  "simulation": {
+    "observedAt": "2026-10-03T01:46:03.880Z",
+    "slot": 506832921,
+    "error": null,
+    "unitsConsumed": 2370,
+    "signatureVerification": false,
+    "note": "Unsigned simulation only. No upgrade proposal, approval, or execution occurred."
+  },
+  "vaultFundingNote": "206491840 Devnet lamports were credited to the vault during preparation and remain there. The capacity extension was separately paid by the test operator because loader extension cannot be invoked through Squads.",
+  "validation": {
+    "unitAndIntegrationTests": 68,
+    "loaderAndSquadsUpgradeTests": 3,
+    "venuePinsRechecked": true,
+    "deployedBaselineUnchanged": true
+  }
+}

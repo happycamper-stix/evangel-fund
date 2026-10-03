@@ -8,6 +8,7 @@
     "start": "next start",
     "solana:build": "node scripts/solana/build.mjs",
     "solana:deploy": "node --env-file-if-exists=.env.local scripts/solana/deploy.mjs",
+    "solana:prepare-upgrade": "node scripts/solana/prepare-upgrade.mjs",
     "solana:preflight": "node scripts/solana/preflight.mjs",
     "solana:fixture": "node scripts/solana/fixture.mjs",
     "governor:evaluate": "node --env-file-if-exists=.env.local scripts/solana/governor.mjs evaluate",
