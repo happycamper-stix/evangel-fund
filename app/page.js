@@ -40,7 +40,7 @@ export default async function HomePage({ searchParams }) {
           <span className="brand-period">.</span>
         </Link>
         <nav aria-label="Main navigation">
-          <Link href="/launch">Token launches</Link>
+          <Link href="/launch">Accelerate</Link>
           <Link href="/fund">Fund projects</Link>
           <Link href="/eacc">How it works</Link>
           <Link href="/docs">Docs ↗</Link>
@@ -72,7 +72,7 @@ export default async function HomePage({ searchParams }) {
           <Signal />
         </section>
         <section className="landing-doors" aria-label="Explore Evangel">
-          <Link href="/launch"><span>TOKENS</span><h2>Explore token launches. <b aria-hidden="true">↗</b></h2></Link>
+          <Link href="/launch"><span>TOKENS</span><h2>Accelerate. <b aria-hidden="true">↗</b></h2></Link>
           <Link href="/fund"><span>PROJECT FUNDING</span><h2>Fund open-source work. <b aria-hidden="true">↗</b></h2></Link>
         </section>
       </main>

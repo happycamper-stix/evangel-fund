@@ -9,7 +9,7 @@ export default function BuilderPath({ active }) {
           "Fund a project",
           "Browse repositories and support their work",
         ],
-        ["/launch", "Explore token launches", "View community tokens and launch availability"],
+        ["/launch", "Accelerate", "View community tokens and launch availability"],
       ].map(([href, title, detail]) => (
         <Link
           key={href}

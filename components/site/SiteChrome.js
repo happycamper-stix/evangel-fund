@@ -5,7 +5,7 @@ export function SiteLinks({ active }) {
   return (
     <nav className="site-links" aria-label="Main navigation">
       {[
-        ["/launch", "Token launches"],
+        ["/launch", "Accelerate"],
         ["/fund", "Fund projects"],
         ["/eacc", "How it works"],
         ["/governor", "Governance"],
