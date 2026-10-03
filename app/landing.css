@@ -834,3 +834,8 @@
     letter-spacing: -0.06em;
   }
 }
+/* The acceleration mark carries its own forward angle. */
+.broadcast-mark {
+  transform: none;
+  filter: none;
+}
