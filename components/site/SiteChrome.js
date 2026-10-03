@@ -32,7 +32,7 @@ export function SiteHeader({ active }) {
       <header className="site-header">
         <Link className="site-brand" href="/" aria-label="Evangel home">
           <img src="/evangel-mark.svg" alt="" width="37" height="39" />
-          evangel
+          evangel<span className="site-acc-mark">e/acc</span>
         </Link>
         <SiteLinks active={active} />
         <span className="site-network">
@@ -46,15 +46,15 @@ export function SiteHeader({ active }) {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <span>evangel / ideas spread through people</span>
+      <span>evangel / build it. back it. spread it.</span>
       <nav aria-label="Resources">
         <Link href="/docs">Documentation</Link>
         <Link href="/setup">Funding guide</Link>
         <Link href="/governor">Governor status</Link>
       </nav>
       <small>
-        {solanaNetwork().cluster} · Token launches and funding require a
-        deployed Solana program.
+        {solanaNetwork().cluster} pilot · Test assets only · Public trading not
+        enabled.
       </small>
     </footer>
   );

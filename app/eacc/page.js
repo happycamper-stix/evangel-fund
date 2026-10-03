@@ -11,9 +11,30 @@ export default function EaccPage() {
     <GuidePage
       active="/eacc"
       kicker="ACCELERATE THE WORK"
-      title="One community. More builders."
-      description="Every project pairs with e/acc. Trading funds the people building."
+      title="An open future needs builders."
+      description="Shared conviction. Open-source work. An economy designed to support the people moving technology forward."
     >
+      <section className="acc-thesis">
+        <span className="acc-thesis-symbol" aria-hidden="true">
+          e/acc
+        </span>
+        <div>
+          <p className="ev-kicker">CONVICTION → CONTRIBUTION</p>
+          <h2>
+            Back the work
+            <br />
+            you want to exist.
+          </h2>
+          <p>
+            Evangel connects the energy of a community with the practical work
+            of building. Support a maintainer, fund a milestone, or rally people
+            around an open-source idea.
+          </p>
+          <Link className="ev-button" href="/fund">
+            Back a builder ↗
+          </Link>
+        </div>
+      </section>
       <section className="ev-card">
         <h2>5% on buys. 5% on sells.</h2>
         <div className="ev-proof-grid">

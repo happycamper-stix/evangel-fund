@@ -209,6 +209,7 @@ test("Wallet Standard signs an actual SBF launch and swap in isolated LiteSVM", 
   await page
     .getByRole("button", { name: "Isolated test wallet", exact: true })
     .click();
+  await page.locator(".workspace-tools > summary").click();
   const card = page.locator("article.sol-milestone").filter({
     has: page.getByRole("heading", {
       name: new RegExp(

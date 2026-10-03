@@ -5,6 +5,7 @@ import { createNoopSigner } from "@solana/kit";
 import { getCreateAssociatedTokenIdempotentInstruction } from "@solana-program/token-2022";
 import { SiteHeader, SiteFooter } from "../site/SiteChrome";
 import Wallet, { useSolana } from "./Wallet";
+import BuilderPath from "@/components/site/BuilderPath";
 import FeePanel from "./FeePanel";
 import GovernancePanel from "./GovernancePanel";
 import { FOUNDATION } from "@/lib/solana/config.mjs";
@@ -88,15 +89,16 @@ export default function Platform({ mode, config }) {
           </p>
           <h1>
             {mode === "fund"
-              ? "Fund the people building."
-              : "Start a movement."}
+              ? "Back the people moving us forward."
+              : "Give your idea a following."}
           </h1>
           <p>
             {mode === "fund"
-              ? "Sponsor work. See the evidence. Reward delivery."
-              : "21 million tokens. Paired with e/acc. A reason to build."}
+              ? "Open-source progress starts with people. Help them keep building."
+              : "Bring a community to a repo, a creator, or an idea. Build around e/acc."}
           </p>
         </header>
+        <BuilderPath active={mode === "fund" ? "/fund" : "/launch"} />
         {!config.configured && (
           <section className="ev-card">
             <h2>Testnet deployment pending</h2>
@@ -142,15 +144,21 @@ function Content({ data, mode }) {
   const p = data.projects.find((p) => p.address === selected);
   return (
     <div className="ev-stack">
-      <GovernancePanel data={data} />
-      <FeePanel data={data} call={call} enabled={enabled} ata={ata} />
+      <details className="workspace-tools">
+        <summary>
+          Project operations <span>Fees, settlement & governance</span>
+        </summary>
+        <div className="ev-stack">
+          <GovernancePanel data={data} />
+          <FeePanel data={data} call={call} enabled={enabled} ata={ata} />
+        </div>
+      </details>
       {mode === "launch" && !data.config.launchEnabled && (
         <section className="ev-card">
           <h2>Launch integration under verification</h2>
           <p>
-            New launches remain disabled while established trading
-            infrastructure is checked against the governed reserve and fee
-            rules. Repository funding has a separate deployment path.
+            Launches are being tested on Devnet. You can explore the model or
+            start with repository funding while trading remains disabled.
           </p>
         </section>
       )}

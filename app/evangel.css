@@ -1380,8 +1380,239 @@
 }
 
 /* Repository verification adds a sixth navigation item. */
-.site-header .site-links { flex-wrap: wrap; }
-.identity-verification { min-width: 0; }
-.identity-verification input { display: block; width: 100%; max-width: 42rem; padding: 12px; margin: 8px 0 18px; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 6px; }
-.identity-verification pre { white-space: pre-wrap; overflow-wrap: anywhere; }
-.identity-verification .cl-rootBox, .identity-verification .cl-cardBox { max-width: 100%; }
+.site-header .site-links {
+  flex-wrap: wrap;
+}
+.identity-verification {
+  min-width: 0;
+}
+.identity-verification input {
+  display: block;
+  width: 100%;
+  max-width: 42rem;
+  padding: 12px;
+  margin: 8px 0 18px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+}
+.identity-verification pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.identity-verification .cl-rootBox,
+.identity-verification .cl-cardBox {
+  max-width: 100%;
+}
+
+/* Shared e/acc wayfinding and editorial hierarchy. */
+.site-acc-mark {
+  font: 11px monospace;
+  letter-spacing: -0.5px;
+  color: #ff9274;
+  border-left: 1px solid #746e60;
+  margin-left: 8px;
+  padding-left: 12px;
+}
+.ev-app .site-guide-intro {
+  position: relative;
+  padding-top: 14px;
+  max-width: 100%;
+}
+.ev-app .site-guide-intro:before {
+  content: "";
+  display: block;
+  width: 42px;
+  height: 4px;
+  background: #ff704c;
+  margin-bottom: 24px;
+}
+.ev-app .site-guide-intro h1 {
+  max-width: 880px;
+  font-size: clamp(36px, 5.5vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -2.3px;
+  text-wrap: balance;
+}
+.ev-app .site-guide-intro > p:last-child {
+  max-width: 660px;
+  font-size: 17px;
+  line-height: 1.65;
+  margin-top: 18px;
+}
+.builder-path {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 26px 0 34px;
+  border: 1px solid #45443d;
+}
+.builder-path a {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding: 20px 17px;
+  min-width: 0;
+  color: #f2efe5;
+}
+.builder-path a + a {
+  border-left: 1px solid #45443d;
+}
+.builder-path a:hover,
+.builder-path a[aria-current] {
+  background: #24211b;
+  text-decoration: none;
+}
+.builder-path a[aria-current] {
+  box-shadow: inset 0 3px #ff704c;
+}
+.builder-step {
+  font: 11px monospace;
+  color: #ff9274;
+  padding-top: 3px;
+}
+.builder-path strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.builder-path small {
+  display: block;
+  color: #bcb8ac;
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+.builder-path a > span:last-child {
+  margin-left: auto;
+  color: #ff9274;
+}
+.workspace-tools {
+  border: 1px solid #45443d;
+  padding: 16px 20px;
+}
+.workspace-tools > summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #f2efe5;
+}
+.workspace-tools > summary span {
+  font-weight: 400;
+  color: #bcb8ac;
+  margin-left: 15px;
+  font-size: 12px;
+}
+.workspace-tools[open] > .ev-stack {
+  margin-top: 22px;
+}
+.acc-thesis {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  align-items: center;
+  gap: 40px;
+  border: 1px solid #45443d;
+  padding: 40px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 39px,
+    #45443d18 40px
+  );
+}
+.acc-thesis-symbol {
+  font-size: clamp(70px, 10vw, 140px);
+  font-weight: 900;
+  letter-spacing: -9px;
+  color: #ff704c;
+  transform: rotate(-7deg);
+  text-align: center;
+}
+.ev-app .acc-thesis h2 {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -1.8px;
+  margin: 14px 0 20px;
+}
+.acc-thesis .ev-button {
+  display: inline-flex;
+  margin-top: 24px;
+}
+.ev-app .site-guide .ev-card {
+  border-left: 1px solid #45443d;
+  border-top: 2px solid #74604b;
+}
+.ev-app .ev-card > h2 {
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+.ev-app :is(input, textarea, select):focus-visible {
+  outline: 2px solid #ff9274;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .builder-path {
+    grid-template-columns: 1fr;
+  }
+  .builder-path a + a {
+    border-left: 0;
+    border-top: 1px solid #45443d;
+  }
+  .builder-path a {
+    padding: 15px;
+  }
+  .builder-path a[aria-current] {
+    box-shadow: inset 3px 0 #ff704c;
+  }
+  .acc-thesis {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 25px;
+  }
+  .acc-thesis-symbol {
+    font-size: 94px;
+    text-align: left;
+    transform: none;
+  }
+  .workspace-tools > summary span {
+    display: block;
+    margin: 6px 0 0;
+  }
+  .site-acc-mark {
+    font-size: 10px;
+    margin-left: 3px;
+    padding-left: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ev-app * {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.ev-app .site-brand > .site-acc-mark {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  background: none;
+  border-radius: 0;
+  color: #ff9274;
+  font: 11px monospace;
+  letter-spacing: -0.5px;
+}
+.ev-app .builder-path a:not(.ev-button) {
+  text-decoration: none;
+}
+@media (max-width: 700px) {
+  .builder-path small {
+    font-size: 11px;
+  }
+  .builder-path a {
+    padding: 12px 14px;
+  }
+  .ev-app .site-brand > .site-acc-mark {
+    font-size: 10px;
+  }
+}

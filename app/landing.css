@@ -728,3 +728,109 @@
     letter-spacing: -3px;
   }
 }
+
+/* e/acc editorial system: the original signal-orange, charcoal and paper palette. */
+.acceleration-band {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  border-block: 1px solid #45443d;
+  padding: 22px 0;
+  flex-wrap: wrap;
+}
+.acceleration-band > span {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  color: #ff704c;
+  margin-right: auto;
+}
+.acceleration-band p {
+  font: 11px monospace;
+  letter-spacing: 1.4px;
+  color: #c8c0ae;
+  margin: 0;
+}
+.acceleration-band i {
+  color: #ff704c;
+  font-style: normal;
+}
+.builder-manifesto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  padding: 85px 0;
+  border-bottom: 1px solid #45443d;
+}
+.builder-manifesto h2 {
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin: 25px 0;
+}
+.builder-manifesto ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.builder-manifesto li {
+  display: flex;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid #45443d;
+}
+.builder-manifesto li:first-child {
+  padding-top: 0;
+}
+.builder-manifesto li > span {
+  font: 12px monospace;
+  color: #ff9274;
+  padding-top: 5px;
+}
+.builder-manifesto h3 {
+  font-size: 23px;
+  letter-spacing: -0.6px;
+  margin: 0 0 10px;
+}
+.builder-manifesto li p {
+  color: #bcb8ac;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+@media (max-width: 650px) {
+  .acceleration-band {
+    gap: 14px;
+  }
+  .acceleration-band > span {
+    width: 100%;
+  }
+  .acceleration-band p {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .builder-manifesto {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 48px 0;
+  }
+  .builder-manifesto h2 {
+    margin-bottom: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 650px) {
+  .landing-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .landing h1 {
+    font-size: clamp(44px, 15vw, 90px);
+    letter-spacing: -0.06em;
+  }
+}

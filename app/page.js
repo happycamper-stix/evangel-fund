@@ -21,8 +21,10 @@ function Signal() {
         width="360"
         height="360"
       />
-      <span className="broadcast-stamp">EVANGEL / SPREAD THE WORD</span>
-      <span className="broadcast-index">SIGNAL NO. 001</span>
+      <span className="broadcast-stamp">
+        EVANGEL / OPEN SOURCE. OPEN FUTURE.
+      </span>
+      <span className="broadcast-index">E/ACC TRANSMISSION / 001</span>
     </div>
   );
 }
@@ -47,24 +49,24 @@ export default async function HomePage({ searchParams }) {
           <Link href="/eacc">e/acc</Link>
           <Link href="/docs">Docs ↗</Link>
         </nav>
-        <Link className="landing-enter" href="/launch">
-          Enter app <span>↗</span>
+        <Link className="landing-enter" href="/fund">
+          Start building <span>↗</span>
         </Link>
       </header>
       <main id="landing-main">
         <section className="landing-hero">
           <div className="landing-copy">
             <p className="landing-eyebrow">
-              <i /> IDEAS DESERVE EVANGELISTS
+              <i /> E/ACC × OPEN SOURCE
             </p>
             <h1>
-              Spread the
+              Spread
               <br />
-              <span>belief.</span>
+              <span>progress.</span>
             </h1>
             <p className="landing-intro">
-              Rally around e/acc. Back open-source workers. Turn shared belief
-              into work the world can build on.
+              Find your people. Fund open-source work. Spread what moves us
+              forward.
             </p>
             <div className="landing-actions">
               <Link className="landing-primary" href="/fund">
@@ -75,22 +77,30 @@ export default async function HomePage({ searchParams }) {
               </Link>
             </div>
             <p className="landing-status">
-              <span /> Solana {solanaNetwork().cluster} · Launches coming soon
+              <span /> Solana {solanaNetwork().cluster} · Test assets only
             </p>
           </div>
           <Signal />
         </section>
+        <div className="acceleration-band" aria-label="Our principles">
+          <span>e/acc</span>
+          <p>OPEN SOURCE</p>
+          <i aria-hidden="true">/</i>
+          <p>HUMAN INGENUITY</p>
+          <i aria-hidden="true">/</i>
+          <p>FORWARD MOTION</p>
+        </div>
         <section className="landing-statement" aria-label="Our idea">
-          <p className="landing-eyebrow">FROM FOLLOWERS TO FOUNDERS</p>
+          <p className="landing-eyebrow">BUILD IT. BACK IT. SPREAD IT.</p>
           <h2>
-            Don’t just follow.
+            Open code.
             <br />
-            <span>Give it a following.</span>
+            <span>Shared ambition.</span>
           </h2>
           <p>
-            A stake for creators. Rewards for contributors.
+            Progress takes people willing to build.
             <br />
-            An economy for the people who show up.
+            Give them a community willing to back them.
           </p>
         </section>
         <section className="landing-paths" aria-label="Explore Evangel">
@@ -121,12 +131,48 @@ export default async function HomePage({ searchParams }) {
             </div>
           </Link>
         </section>
+        <section
+          className="builder-manifesto"
+          aria-labelledby="manifesto-title"
+        >
+          <div>
+            <p className="landing-eyebrow">THE EVANGEL THESIS</p>
+            <h2 id="manifesto-title">
+              Turn conviction
+              <br />
+              into contribution.
+            </h2>
+          </div>
+          <ol>
+            <li>
+              <span>01</span>
+              <div>
+                <h3>Build openly.</h3>
+                <p>Code people can inspect, use and improve.</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <h3>Fund the people.</h3>
+                <p>Support maintainers and contributors doing the work.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <h3>Spread progress.</h3>
+                <p>Bring a community to the ideas you want to see built.</p>
+              </div>
+            </li>
+          </ol>
+        </section>
         <section className="landing-closing">
           <span className="landing-eyebrow">FOR THE BUILDERS</span>
           <h2>e/acc × OSS</h2>
           <p>
-            An existing community. More ways to support the people doing the
-            work.
+            A home for people who believe technology should move forward—and
+            want to help build it.
           </p>
           <Link className="landing-text-link" href="/eacc">
             Explore the model <span>↗</span>
