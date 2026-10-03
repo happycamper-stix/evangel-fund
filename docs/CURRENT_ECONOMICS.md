@@ -12,7 +12,7 @@ Status: implemented in local custody/curve fixtures and clients; production trad
 
 ## Confirmed
 
-- Solana only; no Evangel platform token.
+- Solana only. Evangel’s public repository may participate as a project, including a project token under the same launch rules.
 - Every launch uses existing e/acc as its quote asset: CbcyNo7m1amFWqEQm2m4PLv1UNvpcL3C1Ujm6AkzpKoU. Do not create a replacement e/acc mint on mainnet. Tests must use explicitly identified dummy assets.
 - Remove the e/acc buy-and-burn mechanism. Pairing does not burn tokens or guarantee net demand: buys put quote tokens into the pool and sells withdraw them.
 - Latest confirmed trading fee is 5% on buys and 5% on sells, each assessed on that trade's value, rather than 10% per trade. Implementation uses 3% development, 0.5% community contributors, 1.35% governance and 0.15% foundation, preserving the 5% total. The former burn share is redirected to development.

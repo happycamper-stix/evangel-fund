@@ -5,7 +5,7 @@ export const metadata = {
   robots: { index: false, follow: false },
   title: "Evangel — Build it. Back it. Spread it.",
   description:
-    "Rally around e/acc and support open-source workers. Community launches, earned token exposure and transparent funding without an Evangel platform token.",
+    "Rally around e/acc and support open-source workers. Community launches, earned token exposure and transparent project funding.",
 };
 export default function RootLayout({ children }) {
   return (

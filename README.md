@@ -2,7 +2,7 @@
 
 Website: [evangel.fund](https://evangel.fund). Canonical domain for the landing page, launchpad, funding and docs.
 
-Social token launches and OSS payroll, without a platform token.
+Social token launches and open-source project funding.
 
 - Launch specification: 21M fixed supply, 70% liquidity, 30% governed rewards. Verified adoption releases 1% upfront; developer total ≤20%, community ≥10%, shared releases ≤1% per rolling 21 days.
 - Fee: **5% each buy/sell**, allocated **1% venue protocol / 2.55% development / 0.5% community / 0.8% governance / 0.15% foundation**, denominated in e/acc. Fees book to their UTC collection day. Daily unused governance goes to the originating project. No buy-and-burn.

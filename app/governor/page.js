@@ -20,7 +20,7 @@ export default function GovernorPage() {
       <Upgrade />
       <Reviewer />
       <section className="ev-card">
-        <h2>Review without a platform token</h2>
+        <h2>Evidence-based project review</h2>
         <p>
           Vercel AI Gateway supplies model inference. No agent token, token
           launch, staking vault or token enrollment is required.
@@ -54,7 +54,7 @@ export default function GovernorPage() {
       <section className="ev-card">
         <h2>For e/acc and open-source workers</h2>
         <p>
-          Evangel has no platform token. Existing assets retain their supply and
+          Existing assets retain their supply and
           contract rules. Worker funding uses published milestones, contributor
           authorization and evidence of delivery.
         </p>

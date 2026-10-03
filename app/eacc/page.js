@@ -72,7 +72,7 @@ export default function EaccPage() {
         </a>
         <p>
           Buyers bring e/acc into the pool. Sellers receive e/acc from its
-          available reserve. No buy-and-burn and no Evangel platform token.
+          available reserve. No buy-and-burn.
         </p>
       </section>
       <section className="ev-card">
