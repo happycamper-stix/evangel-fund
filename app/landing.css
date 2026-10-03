@@ -842,6 +842,7 @@
 
 /* A quieter front door: one invitation, one emblem, two destinations. */
 .landing-minimal .landing-nav { justify-content: space-between; min-height: 82px; }
+.landing-minimal .landing-nav nav { justify-content: flex-end; }
 .landing-minimal .landing-hero { min-height: 580px; padding-block: 48px 64px; gap: 80px; }
 .landing-minimal .landing-intro { max-width: 320px; font-size: 18px; line-height: 1.6; }
 .landing-minimal .landing-actions { margin-top: 30px; }
@@ -859,7 +860,7 @@
 }
 @media (max-width: 650px) {
   .landing-minimal .landing-nav { gap: 20px; }
-  .landing-minimal .landing-nav nav { width: auto; gap: 18px; flex-wrap: wrap; }
+  .landing-minimal .landing-nav nav { width: 100%; gap: 18px; flex-wrap: wrap; justify-content: space-between; }
   .landing-minimal .landing-hero { padding-block: 32px 48px; gap: 48px; min-height: auto; }
   .landing-minimal h1 { margin-block: 26px; }
   .landing-minimal .landing-intro { font-size: 16px; max-width: 280px; }
