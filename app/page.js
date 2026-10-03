@@ -58,7 +58,7 @@ export default async function HomePage({ searchParams }) {
               <span>acceleration.</span>
             </h1>
             <p className="landing-intro">
-              A gathering place for people building what’s next.
+              A gathering place for people building the future.
             </p>
             <div className="landing-actions">
               <Link className="landing-primary" href="/fund">
