@@ -35,3 +35,5 @@ skills-lock.json
 
 # Safe public configuration template (no values or signing keys).
 !.env.example
+
+solana/dao/target/

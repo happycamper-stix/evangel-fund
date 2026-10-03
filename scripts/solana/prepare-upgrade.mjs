@@ -1,3 +1,5 @@
+import { LEGACY_UPGRADE_HOLD } from "../../lib/governance/dao-policy.mjs";
+throw Error(LEGACY_UPGRADE_HOLD);
 // Stage only the pinned Devnet artifact. Never execute an upgrade or change its baseline.
 import { readFile } from "node:fs/promises";
 import { getAddressDecoder } from "@solana/kit";

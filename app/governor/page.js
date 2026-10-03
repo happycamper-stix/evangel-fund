@@ -17,6 +17,35 @@ export default function GovernorPage() {
       title="Governance & approvals."
       description="Evidence review for community decisions and open-source worker rewards."
     >
+      <section className="ev-card">
+        <h2>Holder challenges · candidate rules</h2>
+        <p>
+          Developers manage ordinary product work. Program upgrades require two
+          reviewers to inspect the exact build before a 24-hour holder challenge
+          window opens.
+        </p>
+        <p>
+          1% of the fixed voting supply can escalate a change to a 72-hour vote.
+          It then needs 10% turnout and a strict majority in favor. A tie or
+          insufficient turnout blocks the change.
+        </p>
+        <p>
+          Voting tokens must be deposited at least seven days before proposal
+          creation and stay locked through the vote. Votes cannot authorize
+          another project's assets.
+        </p>
+        <p>
+          <strong>Not active on Devnet yet.</strong> The voting mint and
+          immutable upgrade guard must be verified before authority migration.
+          Existing custody remains under its current multisig rules.
+        </p>
+        <a
+          className="ev-link"
+          href="https://github.com/happycamper-stix/evangel-fund/blob/main/docs/DAO_GOVERNANCE.md"
+        >
+          Read the voting rules and rollout gates →
+        </a>
+      </section>
       <Upgrade />
       <Reviewer />
       <section className="ev-card">
@@ -54,9 +83,9 @@ export default function GovernorPage() {
       <section className="ev-card">
         <h2>For e/acc and open-source workers</h2>
         <p>
-          Existing assets retain their supply and
-          contract rules. Worker funding uses published milestones, contributor
-          authorization and evidence of delivery.
+          Existing assets retain their supply and contract rules. Worker funding
+          uses published milestones, contributor authorization and evidence of
+          delivery.
         </p>
         <p>
           The existing e/acc token address on Solana is verified. The native

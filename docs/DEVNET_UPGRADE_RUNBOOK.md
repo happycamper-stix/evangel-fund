@@ -1,5 +1,7 @@
 # Devnet adapter upgrade
 
+**HOLD — superseded by holder challenge governance. Do not sign the staged venue-only upgrade. See DAO_GOVERNANCE.md.**
+
 This is gate 2 of the production-readiness checklist. Staging a buffer does not upgrade the running program. Public trading remains disabled.
 
 ## Preparation

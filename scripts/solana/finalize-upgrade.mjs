@@ -1,3 +1,5 @@
+import { LEGACY_UPGRADE_HOLD } from "../../lib/governance/dao-policy.mjs";
+if (process.argv.includes("--write")) throw Error(LEGACY_UPGRADE_HOLD);
 // Promote the reviewed baseline only after exact finalized onchain code verification.
 import { readFile, writeFile, rename } from "node:fs/promises";
 import { upgradeStatus } from "../../lib/solana/upgrade-status.mjs";

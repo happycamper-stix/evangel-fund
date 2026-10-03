@@ -1,5 +1,7 @@
 # Evangel project context
 
+- DAO candidate: see docs/DAO_GOVERNANCE.md. New upgrade design uses a 24-hour challenge window and 72-hour escalated vote; not deployed. Do not shorten existing milestone notices or claim the current Squads delay changed. Old staged upgrade signing is blocked pending reviewed guard/mint/authority migration.
+
 - Solana only. Rust SBF program, Token-2022, SOL, Next.js and Wallet Standard. Do not add another chain's contracts, wallet provider or dependencies.
 - Native source: solana/program/src/lib.rs plus fees.rs and governance.rs. Client codec: lib/solana/program.mjs. Keep their wire formats aligned.
 - Every coin: 21M, six decimals, 70% token-only initial pool inventory; zero spendable quote tokens initially. Virtual e/acc is pricing state only.

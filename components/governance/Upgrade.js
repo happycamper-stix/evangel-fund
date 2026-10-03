@@ -33,8 +33,8 @@ export default function Upgrade() {
     <section className="ev-card" id="upgrade">
       <h2>Devnet program upgrade</h2>
       <p>
-        Review the staged adapter, then use your configured member wallet.
-        Creating a proposal does not approve it.
+        The previous staged upgrade is on hold while holder challenge governance
+        is implemented and reviewed. Do not sign the old proposal.
       </p>
       <p>
         <a

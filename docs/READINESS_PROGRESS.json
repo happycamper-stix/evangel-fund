@@ -1,8 +1,8 @@
 {
-  "observedAt": "2026-10-03T01:57:12.970143+00:00",
-  "deployment": "https://evangel-je6ttnjyy-happycamper-stixs-projects.vercel.app",
+  "observedAt": "2026-10-03T06:53:56.917626+00:00",
+  "deployment": "https://evangel-iavge14ok-happycamper-stixs-projects.vercel.app",
   "publicSigningPage": "https://evangel.fund/governor#upgrade",
-  "upgradeStatus": "ready; no proposal yet",
+  "upgradeStatus": "legacy signing blocked; DAO candidate not deployed",
   "memberGasFunding": {
     "signature": "27chbz7cWXPZCYheo1AnGH5b2XnHEa3SG6Kryj8dBBTTV62k1wspaYTg2wAHhzm7rHXHETJXbVyTvDnVzKCkYLE1",
     "lamportsPerMember": 20000000,
@@ -14,7 +14,7 @@
     "build": "passed"
   },
   "liveChecks": {
-    "upgradeEndpoint": 200,
+    "upgradeEndpoint": 503,
     "governorPage": 200,
     "launchEnabled": false
   },
@@ -43,5 +43,16 @@
     "broadcast": false
   },
   "baselinePromotionGuard": "refused undeployed upgrade; baseline unchanged",
-  "remaining": "Actual member proposal and two approvals; real 48-hour delay; participant pilot; venue acceptance; scheduled signing service and external alert/recovery acceptance; separately authorized mainnet release."
+  "remaining": "Confirm DAO mint and reviewers; inspect immutable guard and recovery tradeoffs; real Devnet rehearsal; separately approved authority migration under current multisig rules; fresh DAO-reviewed factory upgrade; participant funding/venue acceptance; scheduled settlement and recovery; separately authorized mainnet release.",
+  "daoCandidate": {
+    "status": "local SBF tested; not deployed",
+    "challengeSeconds": 86400,
+    "voteSeconds": 259200,
+    "legacyUpgradeSigning": "blocked pending reviewed DAO migration",
+    "tests": {
+      "sbfScenarios": 7,
+      "rustRules": 4
+    },
+    "votingMint": null
+  }
 }

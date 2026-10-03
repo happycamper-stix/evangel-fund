@@ -33,7 +33,10 @@
     "test:venue:full": "npm run solana:references && npm run solana:inspect-venue && npm run solana:inspect-venue -- --devnet && npm run solana:build:venue && npm run solana:build:venue:review && npm run test:venue",
     "solana:build:venue:review": "node scripts/solana/build.mjs --venue-adapter",
     "solana:keeper-cycle": "node --env-file-if-exists=.env.local scripts/solana/keeper-cycle.mjs",
-    "solana:collect-fees": "node --env-file-if-exists=.env.local scripts/solana/collect-fees.mjs"
+    "solana:collect-fees": "node --env-file-if-exists=.env.local scripts/solana/collect-fees.mjs",
+    "dao:build": "node scripts/solana/build-dao.mjs",
+    "test:dao": "npm run dao:build && node --test tests/dao/*.test.mjs",
+    "test:dao:rules": "PATH=\"$HOME/.cargo/bin:$PATH\" cargo test --manifest-path solana/dao/Cargo.toml"
   },
   "dependencies": {
     "@clerk/backend": "^3.21.1",

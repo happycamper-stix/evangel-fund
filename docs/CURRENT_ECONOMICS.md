@@ -1,3 +1,7 @@
+# Upgrade governance candidate — 2026-10-03
+
+See [DAO_GOVERNANCE.md](DAO_GOVERNANCE.md). New upgrade proposals use a 24-hour challenge window and 72-hour escalated vote. This is locally implemented, not activated. Existing multisig and milestone notice periods are unchanged.
+
 # Latest fee decision — 2026-10-02
 
 The user approved 5% per buy and sell including the venue share: 1% protocol, 2.55% development, 0.5% community, 0.8% governance, 0.15% foundation. Evangel receives 4% net. Divide actual net receipts 63.75% / 12.5% / 20% / 3.75%; do not deduct the protocol share twice. Unused governance still returns to development at daily close, excluding committed expenses.
