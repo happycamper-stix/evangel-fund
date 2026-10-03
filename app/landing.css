@@ -882,3 +882,7 @@
 @media (max-width: 650px) {
   .landing-minimal h1 { font-size: clamp(30px, 8.6vw, 55px); }
 }
+
+/* Keep every header label on the same optical baseline. */
+.landing-minimal .landing-nav nav { align-items: center; }
+.landing-minimal .landing-nav nav a { display: inline-flex; align-items: center; min-height: 44px; line-height: 20px; white-space: nowrap; }

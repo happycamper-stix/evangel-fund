@@ -43,7 +43,7 @@ export default async function HomePage({ searchParams }) {
           <Link href="/launch">Accelerate</Link>
           <Link href="/fund">Fund projects</Link>
           <Link href="/eacc">How it works</Link>
-          <Link href="/docs">Docs ↗</Link>
+          <Link href="/docs">Docs</Link>
         </nav>
       </header>
       <main id="landing-main">
