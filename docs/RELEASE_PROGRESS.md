@@ -19,7 +19,7 @@ Work proceeds through these gates in order. Passing unit tests is not a producti
 - Real GitHub + wallet login, revoked repo access, account mismatch and sign-out checks.
 - Devnet deployment address, build hash, finalized initialization, verified upgrade authority and independent 2-of-3 governance.
 - Full pilot receipts, including unsuccessful/challenged work and fixed-recipient payout.
-- Venue transaction tests showing exact gross/net fees, zero initial quote deposit, 21M minted once, protected 30%, upfront 1%, revoked mint/freeze authorities, and actual e/acc extension support.
+- Venue transaction tests showing exact gross/net fees, zero initial quote liquidity plus the venue-required one-base-unit quote transfer, 21M minted once, protected 30%, upfront 1%, revoked mint/freeze authorities, and actual e/acc extension support.
 - Daily settlement scheduler and monitoring exercised against deployed accounts, recovery drills and signer response procedures.
 - Published internal review, resolved release-blocking findings and disclosed limitations.
 
@@ -43,3 +43,7 @@ The monitor now verifies actual deployed program bytes against the published has
 - `PILOT_ADOPTION_TERMS.json` prepares the tokenless owner's acceptance transaction. No owner/reviewer signature or payout has been fabricated.
 
 Validation for this candidate: 59 unit/integration tests, 48 browser tests, custody and fixture builds, and production web build pass. npm audit: zero vulnerabilities. Cargo audit: known bincode maintenance warning remains. Devnet monitor: no alerts against the unchanged deployed baseline. Candidate acceptance records are immutable per project/wallet/terms and are required by selection; identity verification alone is not consent.
+
+## Venue executable integration prerequisite
+
+The pinned observed DAMM executable now passes local initialization/locking tests (see DAMM_ADAPTER_SPEC.md). Exact 14.7M base deposit math and fixed-fee instruction construction are implemented. The venue requires one quote base unit even at the one-sided boundary; platform sponsorship is necessary to keep this cost off developers. There are 64 passing unit/integration tests plus 2 observed-venue tests. Custody CPI, positive trade/fee settlement, e/acc extension execution and source/binary equivalence remain open. Trading remains disabled.

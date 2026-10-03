@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-03T00:04:57.804Z",
+  "cluster": "mainnet-beta",
+  "commitment": "finalized",
+  "slot": 452766239,
+  "program": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+  "programData": "AUh8bm2XsMfex3KjYGcM3G4uBqUNSDw6HEhWaWMYnyPH",
+  "loader": "BPFLoaderUpgradeab1e11111111111111111111111",
+  "deployedSlot": "445230614",
+  "upgradeAuthority": "JADaUV8kvDpDbJr55wxXJHVaBS3VCj8thZZHjfeuCVLd",
+  "binarySha256": "4d5b920baebc090f89b2e8796a3452ed067c9667a143058c96a312f2c1e6848b",
+  "binaryLength": 2174352,
+  "sourceRevision": "a85c926607433f23f0ea60f4ca7b1ae92f4156cb",
+  "sourceBinaryEquivalenceVerified": false,
+  "adapterEnabled": false
+}

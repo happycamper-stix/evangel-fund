@@ -24,7 +24,9 @@
     "solana:compatibility": "node scripts/solana/launch-compatibility.mjs",
     "security:monitor": "node --env-file-if-exists=.env.local scripts/solana/monitor.mjs",
     "solana:settle-days": "node --env-file-if-exists=.env.local scripts/solana/settle-days.mjs",
-    "solana:inspect-quote": "node scripts/solana/inspect-quote.mjs"
+    "solana:inspect-quote": "node scripts/solana/inspect-quote.mjs",
+    "solana:inspect-venue": "node scripts/solana/inspect-venue.mjs",
+    "test:venue": "node --test tests/venue/*.test.mjs"
   },
   "dependencies": {
     "@clerk/backend": "^3.21.1",
